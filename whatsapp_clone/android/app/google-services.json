@@ -1,0 +1,67 @@
+{
+  "project_info": {
+    "project_number": "926948973737",
+    "project_id": "history-950d8",
+    "storage_bucket": "history-950d8.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:926948973737:android:7eaac2a97512d033daddb8",
+        "android_client_info": {
+          "package_name": "com.example.stremplay"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCcq9O59xmM6u2qzS0voWnjcethGZC9zdw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:926948973737:android:7f25f75f3f378ec6daddb8",
+        "android_client_info": {
+          "package_name": "com.example.traychat"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCcq9O59xmM6u2qzS0voWnjcethGZC9zdw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:926948973737:android:7b5380741693574cdaddb8",
+        "android_client_info": {
+          "package_name": "com.example.whatsapp_clone"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCcq9O59xmM6u2qzS0voWnjcethGZC9zdw"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

@@ -1,0 +1,178 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:traychat/chatprofile.dart';
+import 'package:traychat/controller/singincontroler.dart';
+import 'package:traychat/recentchat.dart';
+
+Getx getx = Get.find<Getx>();
+final _from = GlobalKey<FormState>();
+final name = TextEditingController();
+final reuserid = TextEditingController();
+final number = TextEditingController();
+final repassword = TextEditingController();
+final reconpassword = TextEditingController();
+SharedPreferences? Signupusername;
+final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+Future<void> loginUsername(String name1) async {
+  final SharedPreferences Signupusername =
+      await SharedPreferences.getInstance();
+  await Signupusername.setString('name', name1);
+}
+
+Future<void> signupUser(String uid, String phone, String password) async {
+  final docRef = _firestore.collection('users').doc(uid);
+  final snapshot = await docRef.get();
+
+  if (snapshot.exists) {
+    Get.snackbar('Error', 'User ID already exists');
+    return;
+  }
+
+  await docRef.set({
+    'uid': uid,
+    'phone': phone,
+    'password': password,
+    'createdAt': FieldValue.serverTimestamp(),
+  });
+
+  Get.snackbar('Success', 'Signup Successful');
+  Get.offAll(Recentchat());
+}
+
+Widget singup() {
+  return Column(
+    spacing: 20,
+    mainAxisAlignment: MainAxisAlignment.center,
+    children: [
+      Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        children: [
+          Text(
+            "REGISTER",
+            style: TextStyle(
+              fontSize: 30,
+              color: Color(0xff2A54B6),
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+        ],
+      ),
+      Form(
+        key: _from,
+        child: Column(
+          spacing: 20,
+          children: [
+            TextFormField(
+              controller: name,
+              decoration: InputDecoration(hintText: "Name"),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return "Enter Name";
+                }
+              },
+            ),
+            TextFormField(
+              controller: number,
+              decoration: InputDecoration(hintText: "Mobile Nmber"),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return "Enter Mobile Number";
+                } else if (value.length != 10) {
+                  return "Moble Number Not Currect";
+                }
+              },
+            ),
+            TextFormField(
+              controller: reuserid,
+              decoration: InputDecoration(hintText: "Username"),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return "Enter Userneame";
+                }
+              },
+            ),
+            TextFormField(
+              controller: repassword,
+              decoration: InputDecoration(hintText: "Password"),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return "Enter Password";
+                } else if (value.length < 6) {
+                  return "Must be password 6 Character";
+                }
+              },
+            ),
+            TextFormField(
+              controller: reconpassword,
+              decoration: InputDecoration(hintText: "Confirm Password"),
+              validator: (value) {
+                if (value == null || value.isEmpty) {
+                  return "Enter Confirm Password";
+                } else if (value != repassword.text) {
+                  return "Password Not match";
+                }
+              },
+            ),
+          ],
+        ),
+      ),
+
+      Container(
+        margin: EdgeInsets.only(top: 30),
+        width: 130,
+        height: 45,
+        decoration: BoxDecoration(
+          color: Color(0xffFF9325),
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: ElevatedButton(
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.transparent,
+            shape: BeveledRectangleBorder(
+              borderRadius: BorderRadiusGeometry.circular(5),
+            ),
+          ),
+
+          onPressed: () {
+            if (_from.currentState!.validate()) {
+              loginUsername(reuserid.text);
+
+              signupUser(reuserid.text, number.text, repassword.text);
+            }
+          },
+          child: Text(
+            "SignUp",
+            style: TextStyle(color: Colors.white, fontSize: 20),
+          ),
+        ),
+      ),
+      Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Text(
+            "Already have an Account",
+            style: TextStyle(
+              color: Color(0xff2A54B6),
+              fontWeight: FontWeight.bold,
+            ),
+          ),
+          InkWell(
+            onTap: () {
+              getx.singin.value = !getx.singin.value;
+            },
+            child: Text(
+              "Sing In",
+              style: TextStyle(
+                color: Color(0xff2A54B6),
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+          ),
+        ],
+      ),
+    ],
+  );
+}
