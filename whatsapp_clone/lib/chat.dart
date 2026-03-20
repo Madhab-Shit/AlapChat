@@ -13,8 +13,8 @@ import 'package:traychat/controller/singincontroler.dart';
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:traychat/controller/voicechat.dart';
 import 'package:traychat/galleryacess.dart';
+import 'package:traychat/screen/contact/ui/catactnumber.dart';
 import 'package:traychat/screen/location/ui/location.dart';
-
 
 class Chat extends StatefulWidget {
   final String myid;
@@ -502,9 +502,14 @@ void attechfile(BuildContext context, String myid, String otherid) {
                 "Location",
               ),
             ),
-            attechfilecategory(
-              Icon(Icons.person, color: Colors.blueAccent, size: 25),
-              "Contact",
+            GestureDetector(
+              onTap: () {
+                Get.to(() => Catactnumber());
+              },
+              child: attechfilecategory(
+                Icon(Icons.person, color: Colors.blueAccent, size: 25),
+                "Contact",
+              ),
             ),
             attechfilecategory(
               Icon(Icons.insert_drive_file, color: Colors.blueAccent, size: 25),
