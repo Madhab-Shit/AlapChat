@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:get/get.dart';
@@ -14,52 +12,78 @@ class Location extends StatefulWidget {
 
 class _LocationState extends State<Location> {
   GoogleMapController? _controller;
-  final CameraPosition _kGooglePlex = CameraPosition(
-    target: LatLng(23.8103, 90.4125),
-    zoom: 14,
-  );
 
-  Future<void> getCurrentLatLong() async {
+  CameraPosition? _startPosition;
+
+  bool isLoading = true;
+
+  Future<void> initLocation() async {
+    bool serviceEnabled;
+    LocationPermission permission;
+
+    serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) return;
+
+    permission = await Geolocator.checkPermission();
+
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+    }
+
+    if (permission == LocationPermission.denied ||
+        permission == LocationPermission.deniedForever) {
+      return;
+    }
+
     Position position = await Geolocator.getCurrentPosition(
       desiredAccuracy: LocationAccuracy.high,
     );
 
-    CameraPosition newPosition = CameraPosition(
+    if (!mounted) return;
+
+    _startPosition = CameraPosition(
       target: LatLng(position.latitude, position.longitude),
       zoom: 16,
     );
 
-    _controller?.animateCamera(CameraUpdate.newCameraPosition(newPosition));
+    isLoading = false;
+    setState(() {});
   }
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
-    getCurrentLatLong();
+    initLocation();
+  }
+
+  @override
+  void dispose() {
+    _controller = null;
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        title: const Text("Location"),
         centerTitle: true,
         leading: IconButton(
-          onPressed: () {
-            Get.back();
-          },
-          icon: Icon(Icons.arrow_back),
+          onPressed: () => Get.back(),
+          icon: const Icon(Icons.arrow_back),
         ),
-        title: Text("Location"),
       ),
-      body: GoogleMap(
-        initialCameraPosition: _kGooglePlex,
-        onMapCreated: (controller) {
-          _controller = controller;
-          getCurrentLatLong();
-        },
-        myLocationEnabled: true,
-      ),
+
+      body: isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : GoogleMap(
+              initialCameraPosition: _startPosition!,
+              myLocationEnabled: true,
+              myLocationButtonEnabled: true,
+              onMapCreated: (controller) {
+                _controller = controller;
+              },
+            ),
     );
   }
 }

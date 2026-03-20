@@ -6,6 +6,7 @@ import 'package:permission_handler/permission_handler.dart';
 
 class Contactcontroller extends GetxController {
   RxBool isloading = false.obs;
+ RxList contectcheck=[].obs;
 
   RxList<Contact> contacts = <Contact>[].obs;
 
@@ -17,7 +18,7 @@ class Contactcontroller extends GetxController {
         final data = await FlutterContacts.getContacts(withProperties: true);
 
         contacts.assignAll(data);
-        log(contacts.toString());
+        
       } else {
         log("Permission Denied");
       }
@@ -25,6 +26,10 @@ class Contactcontroller extends GetxController {
       print(e);
     } finally {
       isloading.value = false;
+      contectcheck.value = List.generate(
+      contacts.length,
+      (index) => false,
+    );
     }
   }
 }

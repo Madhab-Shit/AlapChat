@@ -128,6 +128,35 @@ class _ChatState extends State<Chat> {
                                         ),
                                       ),
                                     )
+                                  : data[index]['type'] == 'contact'
+                                  ? Column(
+                                      children: [
+                                        Row(
+                                          spacing: 10,
+                                          mainAxisSize: MainAxisSize.min,
+                                          children: [
+                                            CircleAvatar(
+                                              child: Text(
+                                                data[index]['message']
+                                                    .toString()
+                                                    .split("")
+                                                    .first,
+                                                style: TextStyle(fontSize: 20),
+                                              ),
+                                            ),
+                                            Text(
+                                              data[index]['message'],
+                                              style: TextStyle(fontSize: 16),
+                                            ),
+                                          ],
+                                        ),
+
+                                        Text(
+                                          "View",
+                                          style: TextStyle(fontSize: 20),
+                                        ),
+                                      ],
+                                    )
                                   : data[index]['type'] == 'voice'
                                   ? SizedBox(
                                       width: 150,
@@ -495,6 +524,7 @@ void attechfile(BuildContext context, String myid, String otherid) {
             ),
             GestureDetector(
               onTap: () {
+                Get.back();
                 Get.off(() => Location());
               },
               child: attechfilecategory(
@@ -504,7 +534,8 @@ void attechfile(BuildContext context, String myid, String otherid) {
             ),
             GestureDetector(
               onTap: () {
-                Get.to(() => Catactnumber());
+                Get.back();
+                Get.to(() => Catactnumber(myid: myid, otherid: otherid));
               },
               child: attechfilecategory(
                 Icon(Icons.person, color: Colors.blueAccent, size: 25),
