@@ -144,7 +144,6 @@ class chatcontroller extends GetxController {
 
       return data["secure_url"];
     } catch (e) {
-      print(e);
       return null;
     }
   }
@@ -179,14 +178,68 @@ class chatcontroller extends GetxController {
     });
   }
 
-  Future<void> pickAndViewFile() async {
+  Future<void> pickAndViewFile(String myid, String otherid) async {
     FilePickerResult? result = await FilePicker.platform.pickFiles(
       allowMultiple: true,
     );
 
     if (result != null) {
       List<File> files = result.paths.map((path) => File(path!)).toList();
-      log(files.toString());
+
+      for (int i = 0; i < files.length; i++) {
+        try {
+          final url = Uri.parse(
+            "https://api.cloudinary.com/v1_1/dfofmcmgt/image/upload",
+          );
+
+          final request = http.MultipartRequest("POST", url)
+            ..fields["upload_preset"] = "document"
+            ..files.add(
+              await http.MultipartFile.fromPath("file", files[i].path),
+            );
+
+          final response = await request.send();
+
+          final responseData = await response.stream.bytesToString();
+
+          final data = jsonDecode(responseData);
+
+          log(data["secure_url"]);
+          uploadocument(myid, otherid, data["secure_url"]);
+        } catch (e) {
+          return;
+        }
+      }
+    }
+  }
+
+  Future<void> uploadocument(
+    String send,
+    String recivers,
+    String documenturl,
+  ) async {
+    try {
+      String chatId = getChatId(send, recivers);
+
+      await _firestore.collection('chatdata').doc(chatId).set({
+        'lastMessage': "document",
+        'sender': send,
+        'receiver': chatId,
+        'time': FieldValue.serverTimestamp(),
+      }, SetOptions(merge: true));
+      await _firestore
+          .collection('chatdata')
+          .doc(chatId)
+          .collection(chatId)
+          .add({
+            'type': 'document',
+            'message': documenturl,
+            'time': FieldValue.serverTimestamp(),
+            'sender': send,
+            'receiver': recivers,
+          });
+    } catch (e) {
+      log("UPLOAD ERROR: $e");
     }
   }
 }

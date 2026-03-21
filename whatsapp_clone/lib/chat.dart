@@ -100,6 +100,10 @@ class _ChatState extends State<Chat> {
                             child: Container(
                               padding: EdgeInsets.all(10),
                               margin: EdgeInsets.symmetric(vertical: 5),
+                              constraints: BoxConstraints(
+                                maxWidth:
+                                    MediaQuery.of(context).size.width - 90,
+                              ),
                               decoration: BoxDecoration(
                                 color: isMe ? Color(0xffD9FDD3) : Colors.white,
                                 borderRadius: BorderRadius.circular(10),
@@ -567,7 +571,7 @@ void attechfile(BuildContext context, String myid, String otherid) {
             ),
             GestureDetector(
               onTap: () async {
-                chat.pickAndViewFile();
+                chat.pickAndViewFile(myid, otherid);
               },
               child: attechfilecategory(
                 Icon(
