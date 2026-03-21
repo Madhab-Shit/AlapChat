@@ -6,7 +6,10 @@ import 'package:permission_handler/permission_handler.dart';
 
 class Contactcontroller extends GetxController {
   RxBool isloading = false.obs;
- RxList contectcheck=[].obs;
+  RxList contectcheck = [].obs;
+  late final data;
+
+  RxBool search = false.obs;
 
   RxList<Contact> contacts = <Contact>[].obs;
 
@@ -15,10 +18,9 @@ class Contactcontroller extends GetxController {
       isloading.value = true;
 
       if (await Permission.contacts.request().isGranted) {
-        final data = await FlutterContacts.getContacts(withProperties: true);
+        data = await FlutterContacts.getContacts(withProperties: true);
 
         contacts.assignAll(data);
-        
       } else {
         log("Permission Denied");
       }
@@ -26,10 +28,26 @@ class Contactcontroller extends GetxController {
       print(e);
     } finally {
       isloading.value = false;
-      contectcheck.value = List.generate(
-      contacts.length,
-      (index) => false,
-    );
+      contectcheck.value = List.generate(contacts.length, (index) => false);
+    }
+  }
+
+  void searchdata(String value) {
+    if (value.isEmpty) {
+      contacts.assignAll(data);
+    } else {
+      var result = data
+          .where(
+            (item) =>
+                item.displayName.toString().toLowerCase().contains(
+                  value.toLowerCase(),
+                ) ||
+                item.phones.first.number.toString().toLowerCase().contains(
+                  value.toLowerCase(),
+                ),
+          )
+          .toList();
+      contacts.assignAll(result);
     }
   }
 }

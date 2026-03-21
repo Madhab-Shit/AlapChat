@@ -15,6 +15,7 @@ import 'package:traychat/controller/voicechat.dart';
 import 'package:traychat/galleryacess.dart';
 import 'package:traychat/screen/contact/ui/catactnumber.dart';
 import 'package:traychat/screen/location/ui/location.dart';
+import 'package:traychat/screen/viewmessagecontact/ui/contectview.dart';
 
 class Chat extends StatefulWidget {
   final String myid;
@@ -129,33 +130,53 @@ class _ChatState extends State<Chat> {
                                       ),
                                     )
                                   : data[index]['type'] == 'contact'
-                                  ? Column(
-                                      children: [
-                                        Row(
-                                          spacing: 10,
-                                          mainAxisSize: MainAxisSize.min,
-                                          children: [
-                                            CircleAvatar(
-                                              child: Text(
-                                                data[index]['message']
-                                                    .toString()
-                                                    .split("")
-                                                    .first,
-                                                style: TextStyle(fontSize: 20),
+                                  ? InkWell(
+                                      onTap: () {
+                                        Get.to(
+                                          Contectview(
+                                            name: data[index]['message'],
+                                            phone: data[index]['Phone'],
+                                          ),
+                                        );
+                                      },
+                                      child: Column(
+                                        children: [
+                                          Row(
+                                            spacing: 10,
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              CircleAvatar(
+                                                child: Text(
+                                                  data[index]['message']
+                                                      .toString()
+                                                      .split("")
+                                                      .first,
+                                                  style: TextStyle(
+                                                    fontSize: 20,
+                                                  ),
+                                                ),
                                               ),
-                                            ),
-                                            Text(
-                                              data[index]['message'],
-                                              style: TextStyle(fontSize: 16),
-                                            ),
-                                          ],
-                                        ),
+                                              Text(
+                                                data[index]['message'],
+                                                style: TextStyle(
+                                                  fontSize: 18,
+                                                  color: Color(0xff1B8554),
+                                                  fontWeight: FontWeight.w500,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
 
-                                        Text(
-                                          "View",
-                                          style: TextStyle(fontSize: 20),
-                                        ),
-                                      ],
+                                          Text(
+                                            "View",
+                                            style: TextStyle(
+                                              fontSize: 16,
+                                              color: Color(0xff1B8554),
+                                              fontWeight: FontWeight.w400,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
                                     )
                                   : data[index]['type'] == 'voice'
                                   ? SizedBox(
