@@ -1,8 +1,10 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:audio_waveforms/audio_waveforms.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
@@ -563,9 +565,18 @@ void attechfile(BuildContext context, String myid, String otherid) {
                 "Contact",
               ),
             ),
-            attechfilecategory(
-              Icon(Icons.insert_drive_file, color: Colors.blueAccent, size: 25),
-              "Document",
+            GestureDetector(
+              onTap: () async {
+                chat.pickAndViewFile();
+              },
+              child: attechfilecategory(
+                Icon(
+                  Icons.insert_drive_file,
+                  color: Colors.blueAccent,
+                  size: 25,
+                ),
+                "Document",
+              ),
             ),
             attechfilecategory(
               Icon(Icons.headphones, color: Colors.blueAccent, size: 25),

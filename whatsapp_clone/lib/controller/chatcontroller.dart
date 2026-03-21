@@ -4,17 +4,18 @@ import 'dart:developer';
 import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'dart:io';
-import 'package:firebase_storage/firebase_storage.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
 import 'package:traychat/controller/voicechat.dart';
 import 'package:traychat/galleryacess.dart';
+
 Voicechat voicecontroller = Get.put(Voicechat());
+
 class chatcontroller extends GetxController {
-  
   RxBool chat = false.obs;
 
   RxBool voice = false.obs;
@@ -22,7 +23,6 @@ class chatcontroller extends GetxController {
   Timer? time;
   var pickedImage = Rxn<File>();
   RxString imapedata = "".obs;
-
 
   bool isListening = false;
   String text = "";
@@ -65,31 +65,6 @@ class chatcontroller extends GetxController {
     });
   }
 
-  //voice chat
-  // void voicechat(
-  //   String send,
-  //   String recivers,
-  //   String sms,
-  //   String voicetime,
-  // ) async {
-  //   String chatId = getChatId(send, recivers);
-  //   await _firestore.collection('chatdata').doc(chatId).set({
-  //     'lastMessage': sms,
-  //     'sender': send,
-  //     'receiver': chatId,
-  //     'time': FieldValue.serverTimestamp(),
-  //   }, SetOptions(merge: true));
-
-  //   await _firestore.collection('chatdata').doc(chatId).collection(chatId).add({
-  //     'type': 'Voice',
-  //     'voicetime': voicetime,
-  //     'message': sms,
-  //     'time': FieldValue.serverTimestamp(),
-  //     'sender': send,
-  //     'receiver': recivers,
-  //   });
-  // }
-
   Future<void> chatimage(String send, String recivers, String imageurl) async {
     try {
       String chatId = getChatId(send, recivers);
@@ -112,7 +87,6 @@ class chatcontroller extends GetxController {
             'receiver': recivers,
           });
     } catch (e) {
-      // Jodi error ekhono hoy, check korun Firebase Rules-e 'write' permission ache kina
       log("UPLOAD ERROR: $e");
     }
   }
@@ -146,7 +120,7 @@ class chatcontroller extends GetxController {
     if (image != null) {
       file = File(image.path);
 
-      Get.to(() => GalleryPickerPage(myid: myid, otherid: otherid,));
+      Get.to(() => GalleryPickerPage(myid: myid, otherid: otherid));
     }
   }
 
@@ -174,56 +148,6 @@ class chatcontroller extends GetxController {
       return null;
     }
   }
-
-  //speetch voice
-  // void startListening() async {
-  //   bool available = await speech.initialize();
-
-  //   if (available) {
-  //     isListening = true;
-  //     update();
-
-  //     speech.listen(
-  //       onResult: (result) {
-  //         text = result.recognizedWords;
-  //         update();
-  //       },
-
-  //       // onSoundLevelChange: (level) {
-
-  //       // },
-  //     );
-  //   }
-  // }
-
-  // void stopListening(String myid, String otherid) {
-  //   if (countvoice.value == 0 || text == "") {
-  //     isListening = false;
-  //     countvoice.value = 0;
-  //     return;
-  //   }
-  //   log(text);
-
-  //   speech.stop();
-  //   voicechat(myid, otherid, text, countvoice.string);
-  //   log(countvoice.toString());
-  //   log(text);
-  //   isListening = false;
-  //   countvoice.value = 0;
-  // }
-
-
-
-  // final player = AudioPlayer();
-
-  // Future playAudio(String url) async {
-  //   await player.setUrl(url);
-  //   player.play();
-  // }
-
-  // void pauseAudio() {
-  //   player.pause();
-  // }
 
   RxDouble lineardata = 0.0.obs;
   RxInt playingIndex = (-1).obs;
@@ -253,5 +177,16 @@ class chatcontroller extends GetxController {
         playpush.value = false;
       }
     });
+  }
+
+  Future<void> pickAndViewFile() async {
+    FilePickerResult? result = await FilePicker.platform.pickFiles(
+      allowMultiple: true,
+    );
+
+    if (result != null) {
+      List<File> files = result.paths.map((path) => File(path!)).toList();
+      log(files.toString());
+    }
   }
 }
