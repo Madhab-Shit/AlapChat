@@ -45,11 +45,6 @@ class _ChatState extends State<Chat> {
   final FirebaseFirestore chartdata = FirebaseFirestore.instance;
 
   FocusNode focusNode = FocusNode();
-  @override
-  void dispose() {
-    chat.time?.cancel();
-    super.dispose();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -91,6 +86,7 @@ class _ChatState extends State<Chat> {
                     itemCount: data.length,
                     itemBuilder: (context, index) {
                       bool isMe = data[index]['sender'] == widget.myid;
+                      int status = 0;
                       return Row(
                         mainAxisAlignment: isMe
                             ? MainAxisAlignment.end
@@ -306,6 +302,15 @@ class _ChatState extends State<Chat> {
                                         ],
                                       ),
                                     )
+                                  : data[index]['type'] == 'document'
+                                  ? InkWell(
+                                      onTap: () {
+                                        chat.launchInBrowserView(
+                                          Uri.parse(data[index]['message']),
+                                        );
+                                      },
+                                      child: Container(height: 50),
+                                    )
                                   : Text(
                                       data[index]['message'],
                                       style: TextStyle(
@@ -315,6 +320,8 @@ class _ChatState extends State<Chat> {
                                     ),
                             ),
                           ),
+
+                          if (isMe) tickIcon(status),
                         ],
                       );
                     },
@@ -340,13 +347,6 @@ class _ChatState extends State<Chat> {
                     ),
                     child: Row(
                       children: [
-                        // getx.showEmoji.value
-                        //     ? InkWell(
-                        //       onTap: () {
-                        //         getx.showEmoji.value = !getx.showEmoji.value;
-                        //       },
-                        //       child: Icon(Icons.keyboard))
-                        //     : Icon(Icons.emoji_emotions_outlined),
                         InkWell(
                           onTap: () {
                             if (!getx.showEmoji.value) {
@@ -455,30 +455,15 @@ class _ChatState extends State<Chat> {
                             ),
                           )
                         : InkWell(
-                            // onLongPress: () {
-                            //   chat.timer();
-                            //   chat.voice.value = true;
-                            // },
-                            // onLongPressUp: () {
-                            //   chat.time.cancel();
-                            //   chat.countvoice.value = 0;
-                            //   chat.voice.value = false;
-                            // },
                             onTapDown: (details) {
-                              // log("message");
-                              chat.timer();
                               chat.voice.value = true;
-                              // chat.startListening();
                               voice.startRecord();
                             },
                             onTapUp: (details) async {
                               chat.time?.cancel();
 
                               chat.voice.value = false;
-                              // chat.stopListening(
-                              //   widget.myid,
-                              //   widget.otherUserId,
-                              // );
+
                               voice.stopRecord(widget.myid, widget.otherUserId);
                             },
                             onTapCancel: () {
@@ -570,7 +555,8 @@ void attechfile(BuildContext context, String myid, String otherid) {
               ),
             ),
             GestureDetector(
-              onTap: () async {
+              onTap: () {
+                Get.back();
                 chat.pickAndViewFile(myid, otherid);
               },
               child: attechfilecategory(
@@ -582,9 +568,14 @@ void attechfile(BuildContext context, String myid, String otherid) {
                 "Document",
               ),
             ),
-            attechfilecategory(
-              Icon(Icons.headphones, color: Colors.blueAccent, size: 25),
-              "Audio",
+            GestureDetector(
+              onTap: () {
+                // Get.to(() => MyHomePage(title: "Madhab"));
+              },
+              child: attechfilecategory(
+                Icon(Icons.headphones, color: Colors.blueAccent, size: 25),
+                "Audio",
+              ),
             ),
           ],
         ),
@@ -656,4 +647,14 @@ Widget con(String imagepath) {
     height: 100, // Optional: Set desired height
     fit: BoxFit.cover, // Optional: Adjust the fit
   );
+}
+
+Widget tickIcon(int status) {
+  if (status == 0) {
+    return Icon(Icons.done, size: 16, color: Colors.grey);
+  }
+  if (status == 1) {
+    return Icon(Icons.done_all, size: 16, color: Colors.grey);
+  }
+  return Icon(Icons.done_all, size: 16, color: Colors.blue);
 }

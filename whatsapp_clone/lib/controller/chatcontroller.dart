@@ -12,6 +12,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
 import 'package:traychat/controller/voicechat.dart';
 import 'package:traychat/galleryacess.dart';
+import 'package:url_launcher/url_launcher.dart';
 
 Voicechat voicecontroller = Get.put(Voicechat());
 
@@ -32,12 +33,6 @@ class chatcontroller extends GetxController {
   late File file;
 
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
-
-  void timer() {
-    time = Timer.periodic(Duration(seconds: 1), (time) {
-      countvoice++;
-    });
-  }
 
   String getChatId(String user1, String user2) {
     if (user1.compareTo(user2) > 0) {
@@ -62,6 +57,7 @@ class chatcontroller extends GetxController {
       'time': FieldValue.serverTimestamp(),
       'sender': send,
       'receiver': recivers,
+      'status': 0,
     });
   }
 
@@ -242,4 +238,13 @@ class chatcontroller extends GetxController {
       log("UPLOAD ERROR: $e");
     }
   }
+
+  //show document
+  Future<void> launchInBrowserView(Uri url) async {
+    if (!await launchUrl(url, mode: LaunchMode.inAppBrowserView)) {
+      throw Exception('Could not launch $url');
+    }
+  }
+
+
 }
