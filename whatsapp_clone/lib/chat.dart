@@ -14,6 +14,7 @@ import 'package:traychat/controller/chatcontroller.dart';
 import 'package:traychat/controller/singincontroler.dart';
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:traychat/controller/voicechat.dart';
+import 'package:traychat/documnet.dart';
 import 'package:traychat/galleryacess.dart';
 import 'package:traychat/screen/contact/ui/catactnumber.dart';
 import 'package:traychat/screen/location/ui/location.dart';
@@ -570,7 +571,8 @@ void attechfile(BuildContext context, String myid, String otherid) {
             ),
             GestureDetector(
               onTap: () {
-                // Get.to(() => MyHomePage(title: "Madhab"));
+                chat.pickAudio();
+                // Get.to(() => MusicListScreen());
               },
               child: attechfilecategory(
                 Icon(Icons.headphones, color: Colors.blueAccent, size: 25),

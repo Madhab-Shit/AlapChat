@@ -1,237 +1,68 @@
-// Copyright 2013 The Flutter Authors. All rights reserved.
-// Use of this source code is governed by a BSD-style license that can be
-// found in the LICENSE file.
+// import 'dart:io';
 
-// ignore_for_file: public_member_api_docs
+// import 'package:flutter/material.dart';
+// import 'package:on_audio_query/on_audio_query.dart';
+// import 'package:permission_handler/permission_handler.dart';
 
-import 'dart:async';
+// class MusicListScreen extends StatefulWidget {
+//   @override
+//   _MusicListScreenState createState() => _MusicListScreenState();
+// }
 
-import 'package:flutter/material.dart';
-import 'package:url_launcher/link.dart';
-import 'package:url_launcher/url_launcher.dart';
+// class _MusicListScreenState extends State<MusicListScreen> {
+//   final OnAudioQuery _audioQuery = OnAudioQuery();
 
-class MyHomePage extends StatefulWidget {
-  const MyHomePage({super.key, required this.title});
-  final String title;
+//   @override
+//   void initState() {
+//     super.initState();
+//     requestPermission();
+//   }
 
-  @override
-  State<MyHomePage> createState() => _MyHomePageState();
-}
+//   // স্টোরেজ পারমিশন চাওয়ার ফাংশন
+//   void requestPermission() async {
+//     if (Platform.isAndroid) {
+//       // অ্যান্ড্রয়েড ১৩ (SDK 33) বা তার উপরের জন্য
+//       if (await Permission.audio.request().isGranted) {
+//         setState(() {});
+//       }
+//       // অ্যান্ড্রয়েড ১২ বা তার নিচের জন্য
+//       else if (await Permission.storage.request().isGranted) {
+//         setState(() {});
+//       }
+//     }
+//   }
 
-class _MyHomePageState extends State<MyHomePage> {
-  bool _hasCallSupport = false;
-  Future<void>? _launched;
-  String _phone = '';
+//   @override
+//   Widget build(BuildContext context) {
+//     return Scaffold(
+//       body: FutureBuilder<List<SongModel>>(
+//         future: _audioQuery.querySongs(
+//           sortType: null,
+//           orderType: OrderType.ASC_OR_SMALLER,
+//           uriType: UriType.EXTERNAL,
+//           ignoreCase: true,
+//         ),
+//         builder: (context, item) {
+//           if (item.data == null)
+//             return const Center(child: CircularProgressIndicator());
+//           if (item.data!.isEmpty)
+//             return const Center(child: Text("কোনো গান পাওয়া যায়নি"));
 
-  @override
-  void initState() {
-    super.initState();
-    // Check for phone call support.
-    canLaunchUrl(Uri(scheme: 'tel', path: '123')).then((bool result) {
-      setState(() {
-        _hasCallSupport = result;
-      });
-    });
-  }
-
-  Future<void> _launchInBrowser(Uri url) async {
-    if (!await launchUrl(url, mode: LaunchMode.externalApplication)) {
-      throw Exception('Could not launch $url');
-    }
-  }
-
-  Future<void> _launchInBrowserView(Uri url) async {
-    if (!await launchUrl(url, mode: LaunchMode.inAppBrowserView)) {
-      throw Exception('Could not launch $url');
-    }
-  }
-
-  Future<void> _launchInWebView(Uri url) async {
-    if (!await launchUrl(url, mode: LaunchMode.inAppWebView)) {
-      throw Exception('Could not launch $url');
-    }
-  }
-
-  Future<void> _launchInAppWithBrowserOptions(Uri url) async {
-    if (!await launchUrl(
-      url,
-      mode: LaunchMode.inAppBrowserView,
-      browserConfiguration: const BrowserConfiguration(showTitle: true),
-    )) {
-      throw Exception('Could not launch $url');
-    }
-  }
-
-  Future<void> _launchAsInAppWebViewWithCustomHeaders(Uri url) async {
-    if (!await launchUrl(
-      url,
-      mode: LaunchMode.inAppWebView,
-      webViewConfiguration: const WebViewConfiguration(
-        headers: <String, String>{'my_header_key': 'my_header_value'},
-      ),
-    )) {
-      throw Exception('Could not launch $url');
-    }
-  }
-
-  Future<void> _launchInWebViewWithoutJavaScript(Uri url) async {
-    if (!await launchUrl(
-      url,
-      mode: LaunchMode.inAppWebView,
-      webViewConfiguration: const WebViewConfiguration(enableJavaScript: false),
-    )) {
-      throw Exception('Could not launch $url');
-    }
-  }
-
-  Future<void> _launchInWebViewWithoutDomStorage(Uri url) async {
-    if (!await launchUrl(
-      url,
-      mode: LaunchMode.inAppWebView,
-      webViewConfiguration: const WebViewConfiguration(enableDomStorage: false),
-    )) {
-      throw Exception('Could not launch $url');
-    }
-  }
-
-  Future<void> _launchUniversalLinkIOS(Uri url) async {
-    final bool nativeAppLaunchSucceeded = await launchUrl(
-      url,
-      mode: LaunchMode.externalNonBrowserApplication,
-    );
-    if (!nativeAppLaunchSucceeded) {
-      await launchUrl(url, mode: LaunchMode.inAppBrowserView);
-    }
-  }
-
-  Widget _launchStatus(BuildContext context, AsyncSnapshot<void> snapshot) {
-    if (snapshot.hasError) {
-      return Text('Error: ${snapshot.error}');
-    } else {
-      return const Text('');
-    }
-  }
-
-  Future<void> _makePhoneCall(String phoneNumber) async {
-    final Uri launchUri = Uri(scheme: 'tel', path: phoneNumber);
-    await launchUrl(launchUri);
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    // onPressed calls using this URL are not gated on a 'canLaunch' check
-    // because the assumption is that every device can launch a web URL.
-    final Uri toLaunch = Uri.parse(
-      ' https://res.cloudinary.com/dfofmcmgt/image/upload/v1774146230/vzurupczqcivzyvqgnos.jpg'
-          .trim(),
-    );
-    return Scaffold(
-      appBar: AppBar(title: Text(widget.title)),
-      body: ListView(
-        children: <Widget>[
-          Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: TextField(
-                  onChanged: (String text) => _phone = text,
-                  decoration: const InputDecoration(
-                    hintText: 'Input the phone number to launch',
-                  ),
-                ),
-              ),
-              ElevatedButton(
-                onPressed: _hasCallSupport
-                    ? () => setState(() {
-                        _launched = _makePhoneCall(_phone);
-                      })
-                    : null,
-                child: _hasCallSupport
-                    ? const Text('Make phone call')
-                    : const Text('Calling not supported'),
-              ),
-              Padding(
-                padding: const EdgeInsets.all(16.0),
-                child: Text(toLaunch.toString()),
-              ),
-              ElevatedButton(
-                onPressed: () => setState(() {
-                  _launched = _launchInBrowser(toLaunch);
-                }),
-                child: const Text('Launch in browser'),
-              ),
-              const Padding(padding: EdgeInsets.all(16.0)),
-              ElevatedButton(
-                onPressed: () => setState(() {
-                  _launched = _launchInBrowserView(toLaunch);
-                }),
-                child: const Text('Launch in app'),
-              ),
-              ElevatedButton(
-                onPressed: () => setState(() {
-                  _launched = _launchAsInAppWebViewWithCustomHeaders(toLaunch);
-                }),
-                child: const Text('Launch in app (Custom Headers)'),
-              ),
-              ElevatedButton(
-                onPressed: () => setState(() {
-                  _launched = _launchInWebViewWithoutJavaScript(toLaunch);
-                }),
-                child: const Text('Launch in app (JavaScript OFF)'),
-              ),
-              ElevatedButton(
-                onPressed: () => setState(() {
-                  _launched = _launchInWebViewWithoutDomStorage(toLaunch);
-                }),
-                child: const Text('Launch in app (DOM storage OFF)'),
-              ),
-              const Padding(padding: EdgeInsets.all(16.0)),
-              ElevatedButton(
-                onPressed: () => setState(() {
-                  _launched = _launchUniversalLinkIOS(toLaunch);
-                }),
-                child: const Text(
-                  'Launch a universal link in a native app, fallback to Safari.(Youtube)',
-                ),
-              ),
-              const Padding(padding: EdgeInsets.all(16.0)),
-              ElevatedButton(
-                onPressed: () => setState(() {
-                  _launched = _launchInWebView(toLaunch);
-                  Timer(const Duration(seconds: 5), () {
-                    closeInAppWebView();
-                  });
-                }),
-                child: const Text('Launch in app + close after 5 seconds'),
-              ),
-              const Padding(padding: EdgeInsets.all(16.0)),
-              ElevatedButton(
-                onPressed: () => setState(() {
-                  _launched = _launchInAppWithBrowserOptions(toLaunch);
-                }),
-                child: const Text('Launch in app with title displayed'),
-              ),
-              const Padding(padding: EdgeInsets.all(16.0)),
-              Link(
-                uri: Uri.parse(
-                  'https://pub.dev/documentation/url_launcher/latest/link/link-library.html',
-                ),
-                target: LinkTarget.blank,
-                builder: (BuildContext ctx, FollowLink? openLink) {
-                  return TextButton.icon(
-                    onPressed: openLink,
-                    label: const Text('Link Widget documentation'),
-                    icon: const Icon(Icons.read_more),
-                  );
-                },
-              ),
-              const Padding(padding: EdgeInsets.all(16.0)),
-              FutureBuilder<void>(future: _launched, builder: _launchStatus),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
-}
+//           return ListView.builder(
+//             itemCount: item.data!.length,
+//             itemBuilder: (context, index) {
+//               return ListTile(
+//                 title: Text(item.data![index].displayNameWOExt),
+//                 subtitle: Text("${item.data![index].artist}"),
+//                 leading: QueryArtworkWidget(
+//                   id: item.data![index].id,
+//                   type: ArtworkType.AUDIO,
+//                 ),
+//               );
+//             },
+//           );
+//         },
+//       ),
+//     );
+//   }
+// }

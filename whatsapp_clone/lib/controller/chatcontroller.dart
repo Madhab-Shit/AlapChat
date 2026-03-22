@@ -246,5 +246,33 @@ class chatcontroller extends GetxController {
     }
   }
 
+  //audio file
 
+  Future<void> pickAudio() async {
+    try {
+      FilePickerResult? result = await FilePicker.platform.pickFiles(
+        type: FileType.custom,
+        allowedExtensions: [
+          'mp3',
+          'wav',
+          'm4a',
+          'aac',
+          'ogg',
+          'flac',
+          'amr',
+          'opus',
+          'wma',
+        ],
+      );
+
+      if (result != null && result.files.single.path != null) {
+        String path = result.files.single.path!;
+        log("Audio path: $path");
+      } else {
+        print("User cancelled");
+      }
+    } catch (e) {
+      print(e);
+    }
+  }
 }
