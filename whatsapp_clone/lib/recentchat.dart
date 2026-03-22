@@ -18,11 +18,6 @@ class Recentchat extends StatefulWidget {
 }
 
 class _RecentchatState extends State<Recentchat> {
-  Future<void> setlogin() async {
-    final SharedPreferences sp = await SharedPreferences.getInstance();
-    sp.setBool('sc', false);
-  }
-
   final chatcontroller chat = Get.put(chatcontroller());
 
   @override
@@ -40,9 +35,10 @@ class _RecentchatState extends State<Recentchat> {
             child: PopupMenuButton(
               onSelected: (value) {
                 if (value == "Logout") {
-                  setlogin();
-                  getx.singin.value = true;
-                  Get.offAll(() => Login());
+                  showDialog(
+                    context: context,
+                    builder: (context) => alertdilog(),
+                  );
                 } else if (value == 'Setting') {
                   Get.to(() => Setting());
                 }
@@ -153,4 +149,51 @@ class _RecentchatState extends State<Recentchat> {
       ),
     );
   }
+}
+
+Widget alertdilog() {
+  return AlertDialog(
+    backgroundColor: Color(0xffF5F7FB),
+    shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+    title: const Row(
+      children: [
+        Icon(Icons.logout, color: Colors.red),
+        SizedBox(width: 8),
+        Text("Logout"),
+      ],
+    ),
+    content: const Text("Are you sure you want to logout from this device?"),
+    actionsPadding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+    actions: [
+      TextButton(
+        onPressed: () {
+          Get.back();
+        },
+        child: const Text(
+          "Cancel",
+          style: TextStyle(fontWeight: FontWeight.w600),
+        ),
+      ),
+      ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          backgroundColor: Colors.red,
+          elevation: 0,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(10),
+          ),
+        ),
+        onPressed: () {
+          setlogin();
+          getx.singin.value = true;
+          Get.offAll(() => Login());
+        },
+        child: const Text("Logout", style: TextStyle(color: Colors.white)),
+      ),
+    ],
+  );
+}
+
+Future<void> setlogin() async {
+  final SharedPreferences sp = await SharedPreferences.getInstance();
+  sp.setBool('sc', false);
 }

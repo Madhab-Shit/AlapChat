@@ -80,9 +80,13 @@ class _ChatState extends State<Chat> {
               child: StreamBuilder(
                 stream: chat.showmessage(widget.myid, widget.otherUserId),
                 builder: (context, snapshot) {
-                  if (!snapshot.hasData)
+                  if (!snapshot.hasData) {
                     return Center(child: Text("No Message"));
+                  }
                   var data = snapshot.data!.docs;
+                  if (data.length == 0) {
+                    return Center(child: Text("No Message"));
+                  }
                   return ListView.builder(
                     itemCount: data.length,
                     itemBuilder: (context, index) {

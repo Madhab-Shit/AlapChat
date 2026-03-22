@@ -23,11 +23,18 @@ Future<void> loginUsername(String name1) async {
 }
 
 Future<void> signupUser(String uid, String phone, String password) async {
-  final docRef = _firestore.collection('users').doc(uid);
+  final docRef = _firestore.collection('users').doc(phone);
+  final id = _firestore.collection('users').doc(uid);
+  final userid = await id.get();
   final snapshot = await docRef.get();
 
-  if (snapshot.exists) {
+  if (userid.exists) {
     Get.snackbar('Error', 'User ID already exists');
+    return;
+  }
+
+  if (snapshot.exists) {
+    Get.snackbar('Error', 'Phone Number already exists');
     return;
   }
 
@@ -47,19 +54,36 @@ Widget singup() {
     spacing: 20,
     mainAxisAlignment: MainAxisAlignment.center,
     children: [
-      Row(
-        mainAxisAlignment: MainAxisAlignment.start,
+      Column(
         children: [
-          Text(
-            "REGISTER",
-            style: TextStyle(
-              fontSize: 30,
-              color: Color(0xff2A54B6),
-              fontWeight: FontWeight.bold,
-            ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Text(
+                "Create Account",
+                style: TextStyle(
+                  fontSize: 30,
+                  color: Colors.black,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.start,
+            children: [
+              Text(
+                "Enter your details to join the community.",
+                style: TextStyle(
+                  color: Color(0xffAA9B91),
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
           ),
         ],
       ),
+
       Form(
         key: _from,
         child: Column(
@@ -67,7 +91,29 @@ Widget singup() {
           children: [
             TextFormField(
               controller: name,
-              decoration: InputDecoration(hintText: "Name"),
+              decoration: InputDecoration(
+                hintText: "Name",
+                hintStyle: TextStyle(color: Color(0xffC3B9B0)),
+                prefixIcon: Icon(Icons.person, color: Color(0xffC3B9B0)),
+                filled: true,
+                fillColor: Color(0xffFFFFFF),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(width: 1),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                errorBorder: OutlineInputBorder(
+                  borderSide: BorderSide(width: 1, color: Colors.red),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                focusedErrorBorder: OutlineInputBorder(
+                  borderSide: BorderSide(width: 1),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(width: 1),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
               validator: (value) {
                 if (value == null || value.isEmpty) {
                   return "Enter Name";
@@ -76,7 +122,29 @@ Widget singup() {
             ),
             TextFormField(
               controller: number,
-              decoration: InputDecoration(hintText: "Mobile Nmber"),
+              decoration: InputDecoration(
+                hintText: "Mobile Nmber",
+                hintStyle: TextStyle(color: Color(0xffC3B9B0)),
+                prefixIcon: Icon(Icons.call, color: Color(0xffC3B9B0)),
+                filled: true,
+                fillColor: Color(0xffFFFFFF),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(width: 1),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                errorBorder: OutlineInputBorder(
+                  borderSide: BorderSide(width: 1, color: Colors.red),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                focusedErrorBorder: OutlineInputBorder(
+                  borderSide: BorderSide(width: 1),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(width: 1),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
               validator: (value) {
                 if (value == null || value.isEmpty) {
                   return "Enter Mobile Number";
@@ -87,7 +155,32 @@ Widget singup() {
             ),
             TextFormField(
               controller: reuserid,
-              decoration: InputDecoration(hintText: "Username"),
+              decoration: InputDecoration(
+                hintText: "Username",
+                hintStyle: TextStyle(color: Color(0xffC3B9B0)),
+                filled: true,
+                fillColor: Color(0xffFFFFFF),
+                prefixIcon: Icon(
+                  Icons.alternate_email,
+                  color: Color(0xffC3B9B0),
+                ),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(width: 1),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                errorBorder: OutlineInputBorder(
+                  borderSide: BorderSide(width: 1, color: Colors.red),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                focusedErrorBorder: OutlineInputBorder(
+                  borderSide: BorderSide(width: 1),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(width: 1),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
               validator: (value) {
                 if (value == null || value.isEmpty) {
                   return "Enter Userneame";
@@ -96,7 +189,29 @@ Widget singup() {
             ),
             TextFormField(
               controller: repassword,
-              decoration: InputDecoration(hintText: "Password"),
+              decoration: InputDecoration(
+                hintText: "Password",
+                hintStyle: TextStyle(color: Color(0xffC3B9B0)),
+                filled: true,
+                fillColor: Color(0xffFFFFFF),
+                prefixIcon: Icon(Icons.lock, color: Color(0xffC3B9B0)),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(width: 1),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                errorBorder: OutlineInputBorder(
+                  borderSide: BorderSide(width: 1, color: Colors.red),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                focusedErrorBorder: OutlineInputBorder(
+                  borderSide: BorderSide(width: 1),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(width: 1),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
               validator: (value) {
                 if (value == null || value.isEmpty) {
                   return "Enter Password";
@@ -107,7 +222,29 @@ Widget singup() {
             ),
             TextFormField(
               controller: reconpassword,
-              decoration: InputDecoration(hintText: "Confirm Password"),
+              decoration: InputDecoration(
+                hintText: "Confirm Password",
+                hintStyle: TextStyle(color: Color(0xffC3B9B0)),
+                filled: true,
+                fillColor: Color(0xffFFFFFF),
+                prefixIcon: Icon(Icons.security, color: Color(0xffC3B9B0)),
+                enabledBorder: OutlineInputBorder(
+                  borderSide: BorderSide(width: 1),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                errorBorder: OutlineInputBorder(
+                  borderSide: BorderSide(width: 1, color: Colors.red),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                focusedErrorBorder: OutlineInputBorder(
+                  borderSide: BorderSide(width: 1),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                focusedBorder: OutlineInputBorder(
+                  borderSide: BorderSide(width: 1),
+                  borderRadius: BorderRadius.circular(10),
+                ),
+              ),
               validator: (value) {
                 if (value == null || value.isEmpty) {
                   return "Enter Confirm Password";
@@ -122,10 +259,17 @@ Widget singup() {
 
       Container(
         margin: EdgeInsets.only(top: 30),
-        width: 130,
-        height: 45,
+        width: 250,
+        height: 50,
         decoration: BoxDecoration(
-          color: Color(0xffFF9325),
+          gradient: LinearGradient(
+            colors: [
+              Color(0xff5B86E5),
+              Color(0xff36D1DC), // light orange
+            ],
+            begin: Alignment.centerLeft,
+            end: Alignment.centerRight,
+          ),
           borderRadius: BorderRadius.circular(10),
         ),
         child: ElevatedButton(
@@ -141,11 +285,22 @@ Widget singup() {
               loginUsername(reuserid.text);
 
               signupUser(reuserid.text, number.text, repassword.text);
+              name.clear();
+              reuserid.clear();
+              number.clear();
+              repassword.clear();
+              reconpassword.clear();
             }
           },
-          child: Text(
-            "SignUp",
-            style: TextStyle(color: Colors.white, fontSize: 20),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              Text(
+                "Create Account",
+                style: TextStyle(color: Colors.white, fontSize: 20),
+              ),
+              Icon(Icons.arrow_forward, color: Colors.white, size: 25),
+            ],
           ),
         ),
       ),
@@ -153,9 +308,9 @@ Widget singup() {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Text(
-            "Already have an Account",
+            "Already have an Account? ",
             style: TextStyle(
-              color: Color(0xff2A54B6),
+              color: Color(0xff907675),
               fontWeight: FontWeight.bold,
             ),
           ),
