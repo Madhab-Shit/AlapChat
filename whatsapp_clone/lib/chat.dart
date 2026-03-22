@@ -571,8 +571,8 @@ void attechfile(BuildContext context, String myid, String otherid) {
             ),
             GestureDetector(
               onTap: () {
-                chat.pickAudio();
-                // Get.to(() => MusicListScreen());
+                Get.back();
+                chat.pickAudio(myid, otherid);
               },
               child: attechfilecategory(
                 Icon(Icons.headphones, color: Colors.blueAccent, size: 25),

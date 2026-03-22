@@ -248,7 +248,7 @@ class chatcontroller extends GetxController {
 
   //audio file
 
-  Future<void> pickAudio() async {
+  Future<void> pickAudio(String myid, String otherid) async {
     try {
       FilePickerResult? result = await FilePicker.platform.pickFiles(
         type: FileType.custom,
@@ -268,11 +268,39 @@ class chatcontroller extends GetxController {
       if (result != null && result.files.single.path != null) {
         String path = result.files.single.path!;
         log("Audio path: $path");
+        uploadAudio(path.toString(), myid, otherid);
       } else {
         print("User cancelled");
       }
     } catch (e) {
       print(e);
+    }
+  }
+
+  Future<void> uploadAudio(String file, String myid, String otherid) async {
+    try {
+      final uri = Uri.parse(
+        "https://api.cloudinary.com/v1_1/dfofmcmgt/video/upload",
+      );
+
+      final request = http.MultipartRequest("POST", uri)
+        ..fields["upload_preset"] = "audioPlay"
+        ..files.add(await http.MultipartFile.fromPath("file", file));
+
+      final response = await request.send();
+
+      final responseString = await response.stream.bytesToString();
+
+      if (response.statusCode == 200) {
+        final data = jsonDecode(responseString);
+        log(data["secure_url"]);
+        voicecontroller.sendVoiceMessage(myid, otherid, data["secure_url"]);
+      } else {
+        return;
+      }
+    } catch (e) {
+      log("UPLOAD ERROR = $e");
+      return;
     }
   }
 }

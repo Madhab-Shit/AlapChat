@@ -146,28 +146,6 @@ class Voicechat extends GetxController {
     }
   }
 
-  // ================= PLAY AUDIO =================
-
-  // Future<void> playAudio(String url) async {
-  //   try {
-  //     await playerController.preparePlayer(
-  //       path: url,
-  //       shouldExtractWaveform: true,
-  //     );
-  //     totalDuration.value = playerController.maxDuration ?? 0;
-
-  //     playerController.onCurrentDurationChanged.listen((event) {
-  //       currentDuration.value = event;
-  //     });
-  //     playerController.startPlayer();
-
-  //     isPlaying = true;
-  //     update();
-  //   } catch (e) {
-  //     log("PLAY ERROR = $e");
-  //   }
-  // }
-
   Future<void> playAudio(String url, int index) async {
     // যদি নতুন index হয় → আগে stop
     if (playingIndex.value != index) {
@@ -178,7 +156,7 @@ class Voicechat extends GetxController {
 
     await playerController.preparePlayer(
       path: url,
-      shouldExtractWaveform: true,
+      shouldExtractWaveform: false,
     );
 
     playerController.startPlayer();
