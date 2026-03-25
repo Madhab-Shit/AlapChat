@@ -26,6 +26,11 @@ class _NavigationpageState extends State<Navigationpage> {
     log(getx.username.toString());
   }
 
+  Future<void> setphone() async {
+    final SharedPreferences phone = await SharedPreferences.getInstance();
+    getx.phone.value = phone.getString('phone') ?? '';
+  }
+
   int index = 0;
   List pagecall = [Recentchat(), Status(), Calls()];
 
@@ -34,6 +39,7 @@ class _NavigationpageState extends State<Navigationpage> {
     // TODO: implement initState
     super.initState();
     setname();
+    setphone();
   }
 
   @override

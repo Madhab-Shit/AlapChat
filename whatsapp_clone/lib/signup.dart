@@ -13,7 +13,6 @@ final reuserid = TextEditingController();
 final number = TextEditingController();
 final repassword = TextEditingController();
 final reconpassword = TextEditingController();
-SharedPreferences? Signupusername;
 final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
 Future<void> loginUsername(String name1) async {
@@ -54,6 +53,7 @@ Widget singup() {
     spacing: 20,
     mainAxisAlignment: MainAxisAlignment.center,
     children: [
+      SizedBox(height: 30),
       Column(
         children: [
           Row(
@@ -83,6 +83,7 @@ Widget singup() {
           ),
         ],
       ),
+      SizedBox(height: 20),
 
       Form(
         key: _from,
@@ -96,9 +97,12 @@ Widget singup() {
                 hintStyle: TextStyle(color: Color(0xffC3B9B0)),
                 prefixIcon: Icon(Icons.person, color: Color(0xffC3B9B0)),
                 filled: true,
-                fillColor: Color(0xffFFFFFF),
+                fillColor: Color.fromARGB(57, 185, 184, 184),
                 enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(width: 1),
+                  borderSide: BorderSide(
+                    width: 1,
+                    color: Color.fromARGB(57, 185, 184, 184),
+                  ),
                   borderRadius: BorderRadius.circular(10),
                 ),
                 errorBorder: OutlineInputBorder(
@@ -106,11 +110,17 @@ Widget singup() {
                   borderRadius: BorderRadius.circular(10),
                 ),
                 focusedErrorBorder: OutlineInputBorder(
-                  borderSide: BorderSide(width: 1),
+                  borderSide: BorderSide(
+                    width: 1,
+                    color: Color.fromARGB(57, 185, 184, 184),
+                  ),
                   borderRadius: BorderRadius.circular(10),
                 ),
                 focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(width: 1),
+                  borderSide: BorderSide(
+                    width: 1,
+                    color: Color.fromARGB(57, 185, 184, 184),
+                  ),
                   borderRadius: BorderRadius.circular(10),
                 ),
               ),
@@ -127,9 +137,12 @@ Widget singup() {
                 hintStyle: TextStyle(color: Color(0xffC3B9B0)),
                 prefixIcon: Icon(Icons.call, color: Color(0xffC3B9B0)),
                 filled: true,
-                fillColor: Color(0xffFFFFFF),
+                fillColor: Color.fromARGB(57, 185, 184, 184),
                 enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(width: 1),
+                  borderSide: BorderSide(
+                    width: 1,
+                    color: Color.fromARGB(57, 185, 184, 184),
+                  ),
                   borderRadius: BorderRadius.circular(10),
                 ),
                 errorBorder: OutlineInputBorder(
@@ -137,11 +150,17 @@ Widget singup() {
                   borderRadius: BorderRadius.circular(10),
                 ),
                 focusedErrorBorder: OutlineInputBorder(
-                  borderSide: BorderSide(width: 1),
+                  borderSide: BorderSide(
+                    width: 1,
+                    color: Color.fromARGB(57, 185, 184, 184),
+                  ),
                   borderRadius: BorderRadius.circular(10),
                 ),
                 focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(width: 1),
+                  borderSide: BorderSide(
+                    width: 1,
+                    color: Color.fromARGB(57, 185, 184, 184),
+                  ),
                   borderRadius: BorderRadius.circular(10),
                 ),
               ),
@@ -159,13 +178,16 @@ Widget singup() {
                 hintText: "Username",
                 hintStyle: TextStyle(color: Color(0xffC3B9B0)),
                 filled: true,
-                fillColor: Color(0xffFFFFFF),
+                fillColor: Color.fromARGB(57, 185, 184, 184),
                 prefixIcon: Icon(
                   Icons.alternate_email,
                   color: Color(0xffC3B9B0),
                 ),
                 enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(width: 1),
+                  borderSide: BorderSide(
+                    width: 1,
+                    color: Color.fromARGB(57, 185, 184, 184),
+                  ),
                   borderRadius: BorderRadius.circular(10),
                 ),
                 errorBorder: OutlineInputBorder(
@@ -173,11 +195,17 @@ Widget singup() {
                   borderRadius: BorderRadius.circular(10),
                 ),
                 focusedErrorBorder: OutlineInputBorder(
-                  borderSide: BorderSide(width: 1),
+                  borderSide: BorderSide(
+                    width: 1,
+                    color: Color.fromARGB(57, 185, 184, 184),
+                  ),
                   borderRadius: BorderRadius.circular(10),
                 ),
                 focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(width: 1),
+                  borderSide: BorderSide(
+                    width: 1,
+                    color: Color.fromARGB(57, 185, 184, 184),
+                  ),
                   borderRadius: BorderRadius.circular(10),
                 ),
               ),
@@ -193,10 +221,13 @@ Widget singup() {
                 hintText: "Password",
                 hintStyle: TextStyle(color: Color(0xffC3B9B0)),
                 filled: true,
-                fillColor: Color(0xffFFFFFF),
+                fillColor: Color.fromARGB(57, 185, 184, 184),
                 prefixIcon: Icon(Icons.lock, color: Color(0xffC3B9B0)),
                 enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(width: 1),
+                  borderSide: BorderSide(
+                    width: 1,
+                    color: Color.fromARGB(57, 185, 184, 184),
+                  ),
                   borderRadius: BorderRadius.circular(10),
                 ),
                 errorBorder: OutlineInputBorder(
@@ -204,11 +235,17 @@ Widget singup() {
                   borderRadius: BorderRadius.circular(10),
                 ),
                 focusedErrorBorder: OutlineInputBorder(
-                  borderSide: BorderSide(width: 1),
+                  borderSide: BorderSide(
+                    width: 1,
+                    color: Color.fromARGB(57, 185, 184, 184),
+                  ),
                   borderRadius: BorderRadius.circular(10),
                 ),
                 focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(width: 1),
+                  borderSide: BorderSide(
+                    width: 1,
+                    color: Color.fromARGB(57, 185, 184, 184),
+                  ),
                   borderRadius: BorderRadius.circular(10),
                 ),
               ),
@@ -226,10 +263,13 @@ Widget singup() {
                 hintText: "Confirm Password",
                 hintStyle: TextStyle(color: Color(0xffC3B9B0)),
                 filled: true,
-                fillColor: Color(0xffFFFFFF),
+                fillColor: Color.fromARGB(57, 185, 184, 184),
                 prefixIcon: Icon(Icons.security, color: Color(0xffC3B9B0)),
                 enabledBorder: OutlineInputBorder(
-                  borderSide: BorderSide(width: 1),
+                  borderSide: BorderSide(
+                    width: 1,
+                    color: Color.fromARGB(57, 185, 184, 184),
+                  ),
                   borderRadius: BorderRadius.circular(10),
                 ),
                 errorBorder: OutlineInputBorder(
@@ -237,11 +277,17 @@ Widget singup() {
                   borderRadius: BorderRadius.circular(10),
                 ),
                 focusedErrorBorder: OutlineInputBorder(
-                  borderSide: BorderSide(width: 1),
+                  borderSide: BorderSide(
+                    width: 1,
+                    color: Color.fromARGB(57, 185, 184, 184),
+                  ),
                   borderRadius: BorderRadius.circular(10),
                 ),
                 focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(width: 1),
+                  borderSide: BorderSide(
+                    width: 1,
+                    color: Color.fromARGB(57, 185, 184, 184),
+                  ),
                   borderRadius: BorderRadius.circular(10),
                 ),
               ),

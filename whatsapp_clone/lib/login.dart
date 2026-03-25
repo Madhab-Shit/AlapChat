@@ -36,6 +36,11 @@ class _LoginState extends State<Login> {
     await name.setString('name', name1);
   }
 
+  Future<void> loginPhone(String phone) async {
+    final SharedPreferences phon = await SharedPreferences.getInstance();
+    await phon.setString('phone', phone);
+  }
+
   Future<void> loginUser(String uid, String password) async {
     final docRef = _firestore.collection('users').doc(uid);
     final snapshot = await docRef.get();
@@ -52,7 +57,12 @@ class _LoginState extends State<Login> {
     }
 
     Get.snackbar('Success', 'Login Successful');
-    log(data['phone']);
+
+    loginUsername(data['uid']);
+    loginPhone(uid);
+    // getx.phone.value = uid;
+    // log(getx.phone.value);
+    // getx.username.value = data['uid'];
     Get.offAll(Recentchat());
   }
 
@@ -64,29 +74,34 @@ class _LoginState extends State<Login> {
         child: SafeArea(
           child: Padding(
             padding: const EdgeInsets.all(30.0),
-            child: Column(
-              children: [
-                SizedBox(height: 80),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Text("Welcome Back", style: TextStyle(fontSize: 30)),
-                  ],
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  children: [
-                    Text(
-                      "Securely access your Luminous account.",
-                      style: TextStyle(),
-                    ),
-                  ],
-                ),
-                SizedBox(height: MediaQuery.of(context).size.height - 750),
+            child: Obx(
+              () => getx.singin.value
+                  ? Column(
+                      children: [
+                        SizedBox(height: 80),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Text(
+                              "Welcome Back",
+                              style: TextStyle(fontSize: 30),
+                            ),
+                          ],
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Text(
+                              "Securely access your Luminous account.",
+                              style: TextStyle(),
+                            ),
+                          ],
+                        ),
+                        SizedBox(
+                          height: MediaQuery.of(context).size.height - 750,
+                        ),
 
-                Obx(
-                  () => getx.singin.value
-                      ? Container(
+                        Container(
                           padding: EdgeInsets.all(20),
                           decoration: BoxDecoration(
                             color: Colors.white,
@@ -110,23 +125,40 @@ class _LoginState extends State<Login> {
                                   children: [
                                     TextFormField(
                                       controller: username,
+                                      keyboardType: TextInputType.number,
                                       decoration: InputDecoration(
                                         hintText: "Phone Number",
+
                                         hintStyle: TextStyle(
                                           color: Color(0xffC3B9B0),
                                         ),
+
                                         prefixIcon: Icon(
                                           Icons.call,
                                           color: Color(0xffC3B9B0),
                                         ),
                                         filled: true,
-                                        fillColor: Color(0xffFFFFFF),
+                                        fillColor: Color.fromARGB(
+                                          57,
+                                          185,
+                                          184,
+                                          184,
+                                        ),
                                         enabledBorder: OutlineInputBorder(
-                                          borderSide: BorderSide(width: 1),
+                                          borderSide: BorderSide(
+                                            width: 1,
+                                            color: Color.fromARGB(
+                                              57,
+                                              185,
+                                              184,
+                                              184,
+                                            ),
+                                          ),
                                           borderRadius: BorderRadius.circular(
                                             10,
                                           ),
                                         ),
+                                        border: InputBorder.none,
                                         errorBorder: OutlineInputBorder(
                                           borderSide: BorderSide(
                                             width: 1,
@@ -137,13 +169,29 @@ class _LoginState extends State<Login> {
                                           ),
                                         ),
                                         focusedErrorBorder: OutlineInputBorder(
-                                          borderSide: BorderSide(width: 1),
+                                          borderSide: BorderSide(
+                                            width: 1,
+                                            color: Color.fromARGB(
+                                              57,
+                                              185,
+                                              184,
+                                              184,
+                                            ),
+                                          ),
                                           borderRadius: BorderRadius.circular(
                                             10,
                                           ),
                                         ),
                                         focusedBorder: OutlineInputBorder(
-                                          borderSide: BorderSide(width: 1),
+                                          borderSide: BorderSide(
+                                            width: 1,
+                                            color: Color.fromARGB(
+                                              57,
+                                              185,
+                                              184,
+                                              184,
+                                            ),
+                                          ),
                                           borderRadius: BorderRadius.circular(
                                             10,
                                           ),
@@ -152,10 +200,6 @@ class _LoginState extends State<Login> {
                                       validator: (value) {
                                         if (value == null || value.isEmpty) {
                                           return "Enter Userneame";
-                                        } else {
-                                          loginUsername(username.text);
-                                          getx.username.value = username.text;
-                                          log(getx.username.toString());
                                         }
                                       },
                                     ),
@@ -171,9 +215,22 @@ class _LoginState extends State<Login> {
                                           color: Color(0xffC3B9B0),
                                         ),
                                         filled: true,
-                                        fillColor: Color(0xffFFFFFF),
+                                        fillColor: Color.fromARGB(
+                                          57,
+                                          185,
+                                          184,
+                                          184,
+                                        ),
                                         enabledBorder: OutlineInputBorder(
-                                          borderSide: BorderSide(width: 1),
+                                          borderSide: BorderSide(
+                                            width: 1,
+                                            color: Color.fromARGB(
+                                              57,
+                                              185,
+                                              184,
+                                              184,
+                                            ),
+                                          ),
                                           borderRadius: BorderRadius.circular(
                                             10,
                                           ),
@@ -188,13 +245,29 @@ class _LoginState extends State<Login> {
                                           ),
                                         ),
                                         focusedErrorBorder: OutlineInputBorder(
-                                          borderSide: BorderSide(width: 1),
+                                          borderSide: BorderSide(
+                                            width: 1,
+                                            color: Color.fromARGB(
+                                              57,
+                                              185,
+                                              184,
+                                              184,
+                                            ),
+                                          ),
                                           borderRadius: BorderRadius.circular(
                                             10,
                                           ),
                                         ),
                                         focusedBorder: OutlineInputBorder(
-                                          borderSide: BorderSide(width: 1),
+                                          borderSide: BorderSide(
+                                            width: 1,
+                                            color: Color.fromARGB(
+                                              57,
+                                              185,
+                                              184,
+                                              184,
+                                            ),
+                                          ),
                                           borderRadius: BorderRadius.circular(
                                             10,
                                           ),
@@ -285,7 +358,6 @@ class _LoginState extends State<Login> {
                                   InkWell(
                                     onTap: () {
                                       getx.singin.value = !getx.singin.value;
-                                      log(getx.singin.toString());
                                     },
                                     child: Text(
                                       "Sing Up",
@@ -300,10 +372,10 @@ class _LoginState extends State<Login> {
                               ),
                             ],
                           ),
-                        )
-                      : singup(),
-                ),
-              ],
+                        ),
+                      ],
+                    )
+                  : singup(),
             ),
           ),
         ),
