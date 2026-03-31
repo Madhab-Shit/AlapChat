@@ -1,10 +1,8 @@
 import 'dart:convert';
-import 'dart:developer';
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:audio_waveforms/audio_waveforms.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
@@ -14,7 +12,6 @@ import 'package:traychat/controller/chatcontroller.dart';
 import 'package:traychat/controller/singincontroler.dart';
 import 'package:emoji_picker_flutter/emoji_picker_flutter.dart';
 import 'package:traychat/controller/voicechat.dart';
-import 'package:traychat/documnet.dart';
 import 'package:traychat/galleryacess.dart';
 import 'package:traychat/screen/contact/ui/catactnumber.dart';
 import 'package:traychat/screen/location/ui/location.dart';
@@ -35,7 +32,7 @@ class Chat extends StatefulWidget {
   State<Chat> createState() => _ChatState();
 }
 
-chatcontroller chat = Get.put(chatcontroller());
+Chatcontroller chat = Get.put(Chatcontroller());
 
 class _ChatState extends State<Chat> {
   Getx getx = Get.find<Getx>();
@@ -84,7 +81,7 @@ class _ChatState extends State<Chat> {
                     return Center(child: Text("No Message"));
                   }
                   var data = snapshot.data!.docs;
-                  if (data.length == 0) {
+                  if (data.isEmpty) {
                     return Center(child: Text("No Message"));
                   }
                   return ListView.builder(

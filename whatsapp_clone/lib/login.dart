@@ -5,7 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:traychat/controller/singincontroler.dart';
-import 'package:traychat/recentchat.dart';
+import 'package:traychat/navigationpage.dart';
 import 'package:traychat/signup.dart';
 
 class Login extends StatefulWidget {
@@ -63,7 +63,7 @@ class _LoginState extends State<Login> {
     // getx.phone.value = uid;
     // log(getx.phone.value);
     // getx.username.value = data['uid'];
-    Get.offAll(Recentchat());
+    Get.offAll(Navigationpage());
   }
 
   @override
@@ -201,6 +201,7 @@ class _LoginState extends State<Login> {
                                         if (value == null || value.isEmpty) {
                                           return "Enter Userneame";
                                         }
+                                        return null;
                                       },
                                     ),
                                     TextFormField(
@@ -277,6 +278,7 @@ class _LoginState extends State<Login> {
                                         if (value == null || value.isEmpty) {
                                           return "Enter Userneame";
                                         }
+                                        return null;
                                       },
                                     ),
                                   ],

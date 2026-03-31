@@ -9,6 +9,7 @@ import 'package:traychat/chatprofile.dart';
 import 'package:traychat/controller/singincontroler.dart';
 import 'package:traychat/login.dart' hide getx;
 import 'package:traychat/navigationpage.dart';
+import 'package:traychat/test.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -42,7 +43,7 @@ class _MyWidgetState extends State<MyWidget> {
   @override
   Widget build(BuildContext context) {
     return GetMaterialApp(
-      // home: Login(),
+      // home: CartScreen(),
       home: getx.privay.value ? Navigationpage() : Login(),
       debugShowCheckedModeBanner: false,
     );

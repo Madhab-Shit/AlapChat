@@ -1,4 +1,3 @@
-import 'dart:developer';
 
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -23,7 +22,6 @@ class _NavigationpageState extends State<Navigationpage> {
   Future<void> setname() async {
     final SharedPreferences Username = await SharedPreferences.getInstance();
     getx.username.value = Username.getString('name') ?? '';
-    log(getx.username.toString());
   }
 
   Future<void> setphone() async {
@@ -36,7 +34,6 @@ class _NavigationpageState extends State<Navigationpage> {
 
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     setname();
     setphone();

@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:traychat/chatprofile.dart';
 import 'package:traychat/controller/singincontroler.dart';
+import 'package:traychat/navigationpage.dart';
 import 'package:traychat/recentchat.dart';
 
 Getx getx = Get.find<Getx>();
@@ -12,13 +13,24 @@ final name = TextEditingController();
 final reuserid = TextEditingController();
 final number = TextEditingController();
 final repassword = TextEditingController();
+SharedPreferences? sp;
 final reconpassword = TextEditingController();
 final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+Future<void> _initPrefs() async {
+  sp = await SharedPreferences.getInstance();
+  await sp?.setBool('sc', true);
+}
 
 Future<void> loginUsername(String name1) async {
   final SharedPreferences Signupusername =
       await SharedPreferences.getInstance();
   await Signupusername.setString('name', name1);
+}
+
+Future<void> loginPhone(String phone) async {
+  final SharedPreferences phon = await SharedPreferences.getInstance();
+  await phon.setString('phone', phone);
 }
 
 Future<void> signupUser(String uid, String phone, String password) async {
@@ -43,9 +55,10 @@ Future<void> signupUser(String uid, String phone, String password) async {
     'password': password,
     'createdAt': FieldValue.serverTimestamp(),
   });
-
+  _initPrefs();
+  loginPhone(phone);
   Get.snackbar('Success', 'Signup Successful');
-  Get.offAll(Recentchat());
+  Get.offAll(Navigationpage());
 }
 
 Widget singup() {

@@ -1,7 +1,6 @@
 import 'dart:async';
 import 'dart:convert';
 import 'dart:developer';
-import 'dart:typed_data';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
@@ -16,7 +15,7 @@ import 'package:url_launcher/url_launcher.dart';
 
 Voicechat voicecontroller = Get.put(Voicechat());
 
-class chatcontroller extends GetxController {
+class Chatcontroller extends GetxController {
   RxBool chat = false.obs;
 
   RxBool voice = false.obs;

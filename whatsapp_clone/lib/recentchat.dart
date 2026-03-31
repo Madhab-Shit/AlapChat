@@ -1,4 +1,3 @@
-import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -18,7 +17,7 @@ class Recentchat extends StatefulWidget {
 }
 
 class _RecentchatState extends State<Recentchat> {
-  final chatcontroller chat = Get.put(chatcontroller());
+  final Chatcontroller chat = Get.put(Chatcontroller());
 
   @override
   Widget build(BuildContext context) {

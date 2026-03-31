@@ -23,7 +23,7 @@ class GalleryPickerPage extends StatefulWidget {
 
 class _GalleryPickerPageState extends State<GalleryPickerPage> {
   Getx getx = Get.find<Getx>();
-  chatcontroller chat = Get.put(chatcontroller());
+  Chatcontroller chat = Get.put(Chatcontroller());
   final TextEditingController sendsms = TextEditingController();
 
   final FirebaseFirestore chartdata = FirebaseFirestore.instance;
