@@ -92,8 +92,6 @@ class Voicechat extends GetxController {
 
       final responseString = await response.stream.bytesToString();
 
-      log("UPLOAD RESPONSE = $responseString");
-
       if (response.statusCode == 200) {
         final data = jsonDecode(responseString);
         return data["secure_url"];

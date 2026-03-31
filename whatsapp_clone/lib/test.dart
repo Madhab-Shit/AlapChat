@@ -85,8 +85,12 @@
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:traychat/controller/singincontroler.dart';
+import 'package:traychat/controller/voicechat.dart';
 import 'package:video_trimmer/video_trimmer.dart';
 
 class statusvideo extends StatefulWidget {
@@ -98,6 +102,8 @@ class statusvideo extends StatefulWidget {
 }
 
 class _statusvideoState extends State<statusvideo> {
+  final Getx getx = Get.find<Getx>();
+  final Voicechat controller = Get.put(Voicechat());
   final Trimmer _trimmer = Trimmer();
 
   double _startValue = 0.0;
@@ -202,29 +208,43 @@ class _statusvideoState extends State<statusvideo> {
                   ),
                 ),
                 SizedBox(height: 5),
-                ElevatedButton(
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.green,
-                    shape: ContinuousRectangleBorder(
-                      borderRadius: BorderRadiusGeometry.circular(10),
+                Obx(
+                  () => ElevatedButton(
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: Colors.green,
+                      shape: ContinuousRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                      ),
                     ),
-                  ),
-                  onPressed: _progressVisibility
-                      ? null
-                      : () async {
-                          _saveVideo().then((outputPath) {
-                            print('OUTPUT PATH: $outputPath');
-                            final snackBar = SnackBar(
-                              content: Text('Video Saved successfully'),
-                            );
-                            ScaffoldMessenger.of(
-                              context,
-                            ).showSnackBar(snackBar);
-                          });
-                        },
-                  child: Text(
-                    "SAVE",
-                    style: TextStyle(color: Colors.white, fontSize: 18),
+
+                    onPressed: getx.isloading.value
+                        ? null
+                        : () async {
+                            getx.isloading.value = true; // ✅ start loading
+
+                            final outputPath = await _saveVideo();
+
+                            if (outputPath != null) {
+                              File path = File(outputPath);
+
+                              final pathstatus = await controller.uploadAudio(
+                                path,
+                              );
+
+                              await getx.uploadstory(pathstatus!);
+                            }
+
+                            getx.isloading.value = false; // ✅ stop loading
+
+                            Get.back();
+                          },
+
+                    child: getx.isloading.value
+                        ? const CircularProgressIndicator(color: Colors.white)
+                        : const Text(
+                            "SAVE",
+                            style: TextStyle(color: Colors.white, fontSize: 18),
+                          ),
                   ),
                 ),
               ],

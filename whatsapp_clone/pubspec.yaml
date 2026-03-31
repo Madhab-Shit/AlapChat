@@ -49,6 +49,7 @@ dependencies:
   url_launcher: ^6.3.2
 
   video_trimmer: ^5.0.0
+  video_player: ^2.11.1
 
   
 

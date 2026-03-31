@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:get/get.dart';
 import 'package:get/get_state_manager/get_state_manager.dart';
 import 'package:image_picker/image_picker.dart';
@@ -16,4 +17,21 @@ class Getx extends GetxController {
 
   final ImagePicker opencamera = ImagePicker();
   File? image;
+
+  RxBool isloading = false.obs;
+  Future<void> uploadstory(String pathstatus) async {
+    try {
+      isloading = true.obs;
+      await FirebaseFirestore.instance
+          .collection('status')
+          .doc(username.value)
+          .collection(username.value)
+          .doc()
+          .set({'video': pathstatus});
+    } catch (e) {
+      throw Exception(e);
+    } finally {
+      isloading = false.obs;
+    }
+  }
 }

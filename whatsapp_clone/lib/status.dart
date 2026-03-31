@@ -4,6 +4,7 @@ import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:traychat/story/story.dart';
 import 'package:traychat/test.dart';
 
 class Status extends StatefulWidget {
@@ -73,6 +74,12 @@ class _StatusState extends State<Status> {
             ),
           ],
         ),
+      ),
+      floatingActionButton: FloatingActionButton(
+        onPressed: () {
+          Get.to(() => VideoApp());
+        },
+        child: Icon(Icons.golf_course),
       ),
     );
   }
