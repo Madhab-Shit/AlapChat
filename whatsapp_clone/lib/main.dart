@@ -1,4 +1,3 @@
-
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get_instance/get_instance.dart';
@@ -11,10 +10,13 @@ import 'package:traychat/login.dart' hide getx;
 import 'package:traychat/navigationpage.dart';
 import 'package:traychat/test.dart';
 
+import 'controller/statuscontroller.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp();
   Get.put(Getx());
+  Get.lazyPut(() => Statuscontroller());
   runApp(MyWidget());
 }
 

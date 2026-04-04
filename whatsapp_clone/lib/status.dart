@@ -7,6 +7,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:traychat/story/story.dart';
 import 'package:traychat/test.dart';
 
+import 'controller/statuscontroller.dart';
+
 class Status extends StatefulWidget {
   const Status({super.key});
 
@@ -19,6 +21,7 @@ class _StatusState extends State<Status> {
 
   @override
   Widget build(BuildContext context) {
+    final Statuscontroller status = Get.find<Statuscontroller>();
     return Scaffold(
       backgroundColor: Colors.white,
       appBar: AppBar(
@@ -37,7 +40,10 @@ class _StatusState extends State<Status> {
                 final XFile? galleryVideo = await picker.pickVideo(
                   source: ImageSource.gallery,
                 );
-                File file = File(galleryVideo!.path);
+                if (galleryVideo == null) {
+                  return;
+                }
+                File file = File(galleryVideo.path);
                 Get.to(() => statusvideo(file: file));
               },
               child: Row(
@@ -72,14 +78,54 @@ class _StatusState extends State<Status> {
                 ],
               ),
             ),
+            SizedBox(height: 10),
+            StreamBuilder(
+              stream: status.getstatus(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return Center(child: CircularProgressIndicator());
+                }
+                if (!snapshot.hasData) {
+                  return Center(child: Text("data"));
+                }
+                final data = snapshot.data!.docs;
+
+                return ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: data.length,
+                  itemBuilder: (context, index) {
+                    final data1 = data[index].data();
+                    return InkWell(
+                      onTap: () {
+                        log(data1['item'].toString());
+                        Get.to(() => VideoApp(item: data1['item']));
+                      },
+                      child: Padding(
+                        padding: const EdgeInsets.symmetric(vertical: 5.0),
+                        child: Row(
+                          spacing: 10,
+                          children: [
+                            CircleAvatar(
+                              radius: 30,
+                              child: Text(
+                                data1['username'].toString().split('').first,
+                                style: TextStyle(fontSize: 25),
+                              ),
+                            ),
+                            Text(
+                              data1['username'],
+                              style: TextStyle(fontSize: 18),
+                            ),
+                          ],
+                        ),
+                      ),
+                    );
+                  },
+                );
+              },
+            ),
           ],
         ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          Get.to(() => VideoApp());
-        },
-        child: Icon(Icons.golf_course),
       ),
     );
   }

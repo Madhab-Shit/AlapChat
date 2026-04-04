@@ -25,9 +25,12 @@ class Getx extends GetxController {
       await FirebaseFirestore.instance
           .collection('status')
           .doc(username.value)
-          .collection(username.value)
-          .doc()
-          .set({'video': pathstatus});
+          .set({
+            'username': username.value,
+            'item': FieldValue.arrayUnion([
+              {'video': pathstatus},
+            ]),
+          }, SetOptions(merge: true));
     } catch (e) {
       throw Exception(e);
     } finally {
