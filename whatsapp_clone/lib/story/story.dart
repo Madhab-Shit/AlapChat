@@ -54,18 +54,65 @@ class _VideoAppState extends State<VideoApp> {
     loadVideo();
   }
 
+  void Prevvideo() {
+    _controller.removeListener(videoListener);
+    _controller.dispose();
+
+    i--;
+
+    if (i < 0) {
+      // Get.back();
+      i++;
+      loadVideo();
+      return;
+    }
+
+    loadVideo();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
       appBar: AppBar(backgroundColor: Colors.black),
-      body: Center(
-        child: _controller.value.isInitialized
-            ? AspectRatio(
-                aspectRatio: _controller.value.aspectRatio,
-                child: VideoPlayer(_controller),
-              )
-            : Container(),
+      body: Stack(
+        children: [
+          Center(
+            child: _controller.value.isInitialized
+                ? AspectRatio(
+                    aspectRatio: _controller.value.aspectRatio,
+                    child: VideoPlayer(_controller),
+                  )
+                : Container(),
+          ),
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              InkWell(
+                onTap: () {
+                  Prevvideo();
+                },
+                splashColor: Colors.transparent,
+                highlightColor: Colors.transparent,
+                child: Container(
+                  width: 120,
+                  height: MediaQuery.of(context).size.height,
+                ),
+              ),
+              InkWell(
+                onTap: () {
+                  nextVideo();
+                },
+                splashColor: Colors.transparent,
+                highlightColor: Colors.transparent,
+                child: Container(
+                  width: 120,
+                  height: MediaQuery.of(context).size.height,
+                ),
+              ),
+            ],
+          ),
+        ],
       ),
     );
   }
