@@ -1,6 +1,10 @@
 import 'dart:developer';
 
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:traychat/controller/statuscontroller.dart';
+import 'package:traychat/mystatus/screen/mystoryplay.dart';
+import 'package:traychat/story/story.dart';
 
 class Mystatus extends StatefulWidget {
   final List item;
@@ -11,10 +15,12 @@ class Mystatus extends StatefulWidget {
 }
 
 class _MystatusState extends State<Mystatus> {
+  final Statuscontroller status = Get.find<Statuscontroller>();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: Text("My Status")),
+      backgroundColor: Colors.white,
+      appBar: AppBar(title: Text("My Status"), backgroundColor: Colors.white),
       body: ListView.builder(
         itemCount: widget.item.length,
         itemBuilder: (context, index) {
@@ -27,23 +33,41 @@ class _MystatusState extends State<Mystatus> {
             cleanUrl = image;
           }
           return Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 10.0),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                CircleAvatar(
-                  radius: 25,
-                  backgroundImage: NetworkImage("${cleanUrl.toString()}.jpg"),
-                ),
-                PopupMenuButton(
-                  itemBuilder: (context) => [
-                    PopupMenuItem(child: Text("data")),
-                  ],
-                ),
-              ],
+            padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5),
+            child: InkWell(
+              onTap: () {
+                Get.to(() => Mystoryplay(item: image));
+              },
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  CircleAvatar(
+                    radius: 25,
+                    backgroundColor: Colors.white,
+                    backgroundImage: NetworkImage("${cleanUrl.toString()}.jpg"),
+                  ),
+                  PopupMenuButton(
+                    onSelected: (value) {
+                      if (value == "Delete") {
+                        log("message");
+                      }
+                    },
+                    itemBuilder: (context) => [
+                      PopupMenuItem(child: Text("delete"), value: "Delete"),
+                    ],
+                  ),
+                ],
+              ),
             ),
           );
         },
+      ),
+      floatingActionButton: FloatingActionButton(
+        backgroundColor: Colors.green,
+        onPressed: () async {
+          await status.statusvideochose();
+        },
+        child: Icon(Icons.add, color: Colors.white, size: 30),
       ),
     );
   }

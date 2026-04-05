@@ -23,7 +23,6 @@ class _LoginState extends State<Login> {
   final _formKey = GlobalKey<FormState>();
   final username = TextEditingController();
   final password = TextEditingController();
-  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   Future<void> _initPrefs() async {
     sp = await SharedPreferences.getInstance();
@@ -39,31 +38,6 @@ class _LoginState extends State<Login> {
   Future<void> loginPhone(String phone) async {
     final SharedPreferences phon = await SharedPreferences.getInstance();
     await phon.setString('phone', phone);
-  }
-
-  Future<void> loginUser(String uid, String password) async {
-    final docRef = _firestore.collection('users').doc(uid);
-    final snapshot = await docRef.get();
-
-    if (!snapshot.exists) {
-      Get.snackbar('Error', 'User not found');
-      return;
-    }
-
-    final data = snapshot.data()!;
-    if (data['password'] != password) {
-      Get.snackbar('Error', 'Wrong password');
-      return;
-    }
-
-    Get.snackbar('Success', 'Login Successful');
-
-    loginUsername(data['uid']);
-    loginPhone(uid);
-    // getx.phone.value = uid;
-    // log(getx.phone.value);
-    // getx.username.value = data['uid'];
-    Get.offAll(Navigationpage());
   }
 
   @override
@@ -325,25 +299,36 @@ class _LoginState extends State<Login> {
                                     if (_formKey.currentState!.validate()) {
                                       await _initPrefs();
 
-                                      loginUser(username.text, password.text);
+                                      getx.loginUser(
+                                        username.text,
+                                        password.text,
+                                      );
                                     }
                                   },
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Text(
-                                        "LOGIN",
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontSize: 20,
-                                        ),
-                                      ),
-                                      Icon(
-                                        Icons.arrow_forward,
-                                        color: Colors.white,
-                                        size: 25,
-                                      ),
-                                    ],
+                                  child: Obx(
+                                    () => getx.isloading.value
+                                        ? CircularProgressIndicator(
+                                            color: Colors.white,
+                                          )
+                                        : Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.center,
+                                            children: [
+                                              Text(
+                                                "LOGIN",
+                                                style: TextStyle(
+                                                  color: Colors.white,
+                                                  fontSize: 20,
+                                                ),
+                                              ),
+
+                                              Icon(
+                                                Icons.arrow_forward,
+                                                color: Colors.white,
+                                                size: 25,
+                                              ),
+                                            ],
+                                          ),
                                   ),
                                 ),
                               ),

@@ -6,7 +6,8 @@ import 'package:video_player/video_player.dart';
 
 class VideoApp extends StatefulWidget {
   final List item;
-  const VideoApp({super.key, required this.item});
+  final String name;
+  const VideoApp({super.key, required this.item, required this.name});
 
   @override
   _VideoAppState createState() => _VideoAppState();
@@ -41,6 +42,7 @@ class _VideoAppState extends State<VideoApp> {
   }
 
   void nextVideo() {
+    
     _controller.removeListener(videoListener);
     _controller.dispose();
 
@@ -74,7 +76,14 @@ class _VideoAppState extends State<VideoApp> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.black,
-      appBar: AppBar(backgroundColor: Colors.black),
+      appBar: AppBar(
+        backgroundColor: Colors.black,
+        leading: IconButton(
+          onPressed: () => Get.back(),
+          icon: Icon(Icons.arrow_back, color: Colors.white),
+        ),
+        title: Text(widget.name, style: TextStyle(color: Colors.white)),
+      ),
       body: Stack(
         children: [
           Center(

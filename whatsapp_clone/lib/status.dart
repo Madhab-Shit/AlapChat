@@ -99,19 +99,37 @@ class _StatusState extends State<Status> {
                 if (!snapshot.hasData) {
                   return Center(child: Text("data"));
                 }
-                final data = snapshot.data!.docs;
-
+                final data1 = snapshot.data!.docs;
                 return ListView.builder(
                   shrinkWrap: true,
-                  itemCount: data.length,
+                  itemCount: data1.length,
                   itemBuilder: (context, index) {
-                    final data1 = data[index].data();
-                    if (data1['username'] == username.username.value) {
-                      return null;
+                    var data = data1[index].data();
+
+                    List items = data['item'] ?? [];
+
+                    List validItems = items.where((item) {
+                      return item['expiresAt'].toDate().isAfter(DateTime.now());
+                    }).toList();
+                    if (validItems.isEmpty) {
+                      FirebaseFirestore.instance
+                          .collection('status')
+                          .doc(data1[index].id)
+                          .delete();
+                      return SizedBox();
                     }
+                    if (data['username'] == username.username.value) {
+                      return SizedBox();
+                    }
+
                     return InkWell(
                       onTap: () {
-                        Get.to(() => VideoApp(item: data1['item']));
+                        Get.to(
+                          () => VideoApp(
+                            item: data['item'],
+                            name: data['username'],
+                          ),
+                        );
                       },
                       child: Padding(
                         padding: const EdgeInsets.symmetric(vertical: 5.0),
@@ -121,12 +139,12 @@ class _StatusState extends State<Status> {
                             CircleAvatar(
                               radius: 30,
                               child: Text(
-                                data1['username'].toString().split('').first,
+                                data['username'].toString().split('').first,
                                 style: TextStyle(fontSize: 25),
                               ),
                             ),
                             Text(
-                              data1['username'],
+                              data['username'],
                               style: TextStyle(fontSize: 18),
                             ),
                           ],

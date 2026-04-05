@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:developer';
 import 'dart:io';
 import 'dart:typed_data';
 import 'package:audio_waveforms/audio_waveforms.dart';
@@ -87,8 +88,20 @@ class _ChatState extends State<Chat> {
                   return ListView.builder(
                     itemCount: data.length,
                     itemBuilder: (context, index) {
-                      bool isMe = data[index]['sender'] == widget.myid;
-                      int status = 0;
+                      var msg = data[index];
+                      chat.timefind(data[index]['time']);
+
+                      bool isMe = msg['sender'] == widget.myid;
+
+                      int status = msg['status'] ?? 0;
+
+                      if (msg['receiver'] == widget.myid && status != 2) {
+                        chat.seenmessage(
+                          msg.id,
+                          widget.myid,
+                          widget.otherUserId,
+                        );
+                      }
                       return Row(
                         mainAxisAlignment: isMe
                             ? MainAxisAlignment.end
@@ -108,222 +121,244 @@ class _ChatState extends State<Chat> {
                               ),
 
                               // ...
-                              child: data[index]['type'] == 'image'
-                                  ? InkWell(
-                                      onTap: () {
-                                        Get.to(
-                                          () => Chatimageshow(
-                                            imagepath: data[index]['message'],
-                                            imageid: isMe,
-                                            otherid: widget.otherUserId,
-                                          ),
-                                        );
-                                      },
-                                      // child: con(data[index]['message']),
-                                      child: Container(
-                                        height: 200,
-                                        width: 250,
-                                        decoration: BoxDecoration(
-                                          image: DecorationImage(
-                                            image: NetworkImage(
-                                              data[index]['message'],
-                                            ),
-                                            fit: BoxFit.cover,
-                                          ),
-                                        ),
-                                      ),
-                                    )
-                                  : data[index]['type'] == 'contact'
-                                  ? InkWell(
-                                      onTap: () {
-                                        Get.to(
-                                          Contectview(
-                                            name: data[index]['message'],
-                                            phone: data[index]['Phone'],
-                                          ),
-                                        );
-                                      },
-                                      child: Column(
-                                        children: [
-                                          Row(
-                                            spacing: 10,
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: [
-                                              CircleAvatar(
-                                                child: Text(
-                                                  data[index]['message']
-                                                      .toString()
-                                                      .split("")
-                                                      .first,
-                                                  style: TextStyle(
-                                                    fontSize: 20,
-                                                  ),
-                                                ),
+                              child: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  data[index]['type'] == 'image'
+                                      ? InkWell(
+                                          onTap: () {
+                                            Get.to(
+                                              () => Chatimageshow(
+                                                imagepath:
+                                                    data[index]['message'],
+                                                imageid: isMe,
+                                                otherid: widget.otherUserId,
                                               ),
+                                            );
+                                          },
+                                          // child: con(data[index]['message']),
+                                          child: Container(
+                                            height: 200,
+                                            width: 250,
+                                            decoration: BoxDecoration(
+                                              image: DecorationImage(
+                                                image: NetworkImage(
+                                                  data[index]['message'],
+                                                ),
+                                                fit: BoxFit.cover,
+                                              ),
+                                            ),
+                                          ),
+                                        )
+                                      : data[index]['type'] == 'contact'
+                                      ? InkWell(
+                                          onTap: () {
+                                            Get.to(
+                                              Contectview(
+                                                name: data[index]['message'],
+                                                phone: data[index]['Phone'],
+                                              ),
+                                            );
+                                          },
+                                          child: Column(
+                                            children: [
+                                              Row(
+                                                spacing: 10,
+                                                mainAxisSize: MainAxisSize.min,
+                                                children: [
+                                                  CircleAvatar(
+                                                    child: Text(
+                                                      data[index]['message']
+                                                          .toString()
+                                                          .split("")
+                                                          .first,
+                                                      style: TextStyle(
+                                                        fontSize: 20,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                  Text(
+                                                    data[index]['message'],
+                                                    style: TextStyle(
+                                                      fontSize: 18,
+                                                      color: Color(0xff1B8554),
+                                                      fontWeight:
+                                                          FontWeight.w500,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+
                                               Text(
-                                                data[index]['message'],
+                                                "View",
                                                 style: TextStyle(
-                                                  fontSize: 18,
+                                                  fontSize: 16,
                                                   color: Color(0xff1B8554),
-                                                  fontWeight: FontWeight.w500,
+                                                  fontWeight: FontWeight.w400,
                                                 ),
                                               ),
                                             ],
                                           ),
-
-                                          Text(
-                                            "View",
-                                            style: TextStyle(
-                                              fontSize: 16,
-                                              color: Color(0xff1B8554),
-                                              fontWeight: FontWeight.w400,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    )
-                                  : data[index]['type'] == 'voice'
-                                  ? SizedBox(
-                                      width: 150,
-                                      child: Row(
-                                        children: [
-                                          Obx(
-                                            () => InkWell(
-                                              onTap: () {
-                                                voice.playAudio(
-                                                  data[index]['message'],
-                                                  index,
-                                                );
-
-                                                if (chat.playindes.value ==
-                                                    index) {
-                                                  chat.playpush.value =
-                                                      !chat.playpush.value;
-                                                } else {
-                                                  // new item → previous stop
-                                                  chat.playindes.value = index;
-                                                  chat.playpush.value = true;
-                                                }
-                                              },
-                                              child:
-                                                  chat.playindes.value ==
-                                                          index &&
-                                                      chat.playpush.value
-                                                  ? InkWell(
-                                                      onTap: () {
-                                                        voice.stopAudio();
-                                                        chat.playpush.value =
-                                                            false;
-                                                      },
-                                                      child: Icon(
-                                                        Icons.pause,
-                                                        size: 30,
-                                                      ),
-                                                    )
-                                                  : Icon(
-                                                      Icons.play_arrow,
-                                                      size: 30,
-                                                    ),
-                                            ),
-                                          ),
-
-                                          Expanded(
-                                            child: Column(
-                                              children: [
-                                                SizedBox(
-                                                  height: 20,
-                                                  child: Obx(() {
-                                                    if (voice
-                                                            .playingIndex
-                                                            .value !=
-                                                        index) {
-                                                      return Container(
-                                                        height: 20,
-                                                        width:
-                                                            MediaQuery.of(
-                                                              context,
-                                                            ).size.width *
-                                                            .5,
-                                                        color: Colors
-                                                            .transparent, // ⭐ empty look when not playing
-                                                      );
-                                                    }
-
-                                                    return AudioFileWaveforms(
-                                                      size: Size(
-                                                        MediaQuery.of(
-                                                              context,
-                                                            ).size.width *
-                                                            .5,
-                                                        60,
-                                                      ),
-                                                      playerController: voice
-                                                          .playerController,
-                                                      playerWaveStyle:
-                                                          PlayerWaveStyle(
-                                                            fixedWaveColor:
-                                                                Colors
-                                                                    .grey
-                                                                    .shade400,
-                                                            liveWaveColor:
-                                                                Colors.blue,
-                                                            spacing: 5,
-                                                            waveThickness: 3,
-                                                          ),
+                                        )
+                                      : data[index]['type'] == 'voice'
+                                      ? SizedBox(
+                                          width: 150,
+                                          child: Row(
+                                            children: [
+                                              Obx(
+                                                () => InkWell(
+                                                  onTap: () {
+                                                    voice.playAudio(
+                                                      data[index]['message'],
+                                                      index,
                                                     );
-                                                  }),
+
+                                                    if (chat.playindes.value ==
+                                                        index) {
+                                                      chat.playpush.value =
+                                                          !chat.playpush.value;
+                                                    } else {
+                                                      // new item → previous stop
+                                                      chat.playindes.value =
+                                                          index;
+                                                      chat.playpush.value =
+                                                          true;
+                                                    }
+                                                  },
+                                                  child:
+                                                      chat.playindes.value ==
+                                                              index &&
+                                                          chat.playpush.value
+                                                      ? InkWell(
+                                                          onTap: () {
+                                                            voice.stopAudio();
+                                                            chat
+                                                                    .playpush
+                                                                    .value =
+                                                                false;
+                                                          },
+                                                          child: Icon(
+                                                            Icons.pause,
+                                                            size: 30,
+                                                          ),
+                                                        )
+                                                      : Icon(
+                                                          Icons.play_arrow,
+                                                          size: 30,
+                                                        ),
                                                 ),
-                                                SizedBox(height: 5),
-                                                Obx(() {
-                                                  final total = Duration(
-                                                    milliseconds: voice
-                                                        .totalDuration
-                                                        .value,
-                                                  );
-                                                  final current = Duration(
-                                                    milliseconds: voice
-                                                        .currentDuration
-                                                        .value,
-                                                  );
+                                              ),
 
-                                                  String t =
-                                                      "${total.inMinutes}:${(total.inSeconds % 60).toString().padLeft(2, '0')}";
-                                                  String c =
-                                                      "${current.inMinutes}:${(current.inSeconds % 60).toString().padLeft(2, '0')}";
+                                              Expanded(
+                                                child: Column(
+                                                  children: [
+                                                    SizedBox(
+                                                      height: 20,
+                                                      child: Obx(() {
+                                                        if (voice
+                                                                .playingIndex
+                                                                .value !=
+                                                            index) {
+                                                          return Container(
+                                                            height: 20,
+                                                            width:
+                                                                MediaQuery.of(
+                                                                  context,
+                                                                ).size.width *
+                                                                .5,
+                                                            color: Colors
+                                                                .transparent, // ⭐ empty look when not playing
+                                                          );
+                                                        }
 
-                                                  return Text(
-                                                    "$c / $t",
-                                                    style: TextStyle(
-                                                      fontSize: 11,
+                                                        return AudioFileWaveforms(
+                                                          size: Size(
+                                                            MediaQuery.of(
+                                                                  context,
+                                                                ).size.width *
+                                                                .5,
+                                                            60,
+                                                          ),
+                                                          playerController: voice
+                                                              .playerController,
+                                                          playerWaveStyle:
+                                                              PlayerWaveStyle(
+                                                                fixedWaveColor:
+                                                                    Colors
+                                                                        .grey
+                                                                        .shade400,
+                                                                liveWaveColor:
+                                                                    Colors.blue,
+                                                                spacing: 5,
+                                                                waveThickness:
+                                                                    3,
+                                                              ),
+                                                        );
+                                                      }),
                                                     ),
-                                                  );
-                                                }),
-                                              ],
+                                                    SizedBox(height: 5),
+                                                    Obx(() {
+                                                      final total = Duration(
+                                                        milliseconds: voice
+                                                            .totalDuration
+                                                            .value,
+                                                      );
+                                                      final current = Duration(
+                                                        milliseconds: voice
+                                                            .currentDuration
+                                                            .value,
+                                                      );
+
+                                                      String t =
+                                                          "${total.inMinutes}:${(total.inSeconds % 60).toString().padLeft(2, '0')}";
+                                                      String c =
+                                                          "${current.inMinutes}:${(current.inSeconds % 60).toString().padLeft(2, '0')}";
+
+                                                      return Text(
+                                                        "$c / $t",
+                                                        style: TextStyle(
+                                                          fontSize: 11,
+                                                        ),
+                                                      );
+                                                    }),
+                                                  ],
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        )
+                                      : data[index]['type'] == 'document'
+                                      ? InkWell(
+                                          onTap: () {
+                                            chat.launchInBrowserView(
+                                              Uri.parse(data[index]['message']),
+                                            );
+                                          },
+                                          child: Container(height: 50),
+                                        )
+                                      : Flexible(
+                                          child: Text(
+                                            data[index]['message'],
+                                            style: TextStyle(
+                                              fontSize: 18,
+                                              fontWeight: FontWeight.w500,
                                             ),
                                           ),
-                                        ],
-                                      ),
-                                    )
-                                  : data[index]['type'] == 'document'
-                                  ? InkWell(
-                                      onTap: () {
-                                        chat.launchInBrowserView(
-                                          Uri.parse(data[index]['message']),
-                                        );
-                                      },
-                                      child: Container(height: 50),
-                                    )
-                                  : Text(
-                                      data[index]['message'],
-                                      style: TextStyle(
-                                        fontSize: 18,
-                                        fontWeight: FontWeight.w500,
-                                      ),
+                                        ),
+                                  SizedBox(width: 5),
+                                  Padding(
+                                    padding: const EdgeInsets.only(top: 10.0),
+                                    child: Text(
+                                      chat.formattedTime.value,
+                                      style: TextStyle(fontSize: 10),
+                                      textAlign: TextAlign.right,
                                     ),
+                                  ),
+                                  if (isMe) tickIcon(status),
+                                ],
+                              ),
                             ),
                           ),
-
-                          if (isMe) tickIcon(status),
                         ],
                       );
                     },
@@ -627,37 +662,21 @@ Widget attechfilecategory(Icon icons, String name) {
   );
 }
 
-void galleryasscess(BuildContext context) {
-  showModalBottomSheet(
-    context: context,
-    builder: (context) {
-      return Container(height: 200);
-    },
-  );
-}
-
-// Future<String> decodeimage()
-// {
-//   return
-// }
-
-Widget con(String imagepath) {
-  Uint8List bytes = base64Decode(imagepath);
-
-  return Image.memory(
-    bytes,
-    width: 100, // Optional: Set desired width
-    height: 100, // Optional: Set desired height
-    fit: BoxFit.cover, // Optional: Adjust the fit
-  );
-}
-
 Widget tickIcon(int status) {
   if (status == 0) {
-    return Icon(Icons.done, size: 16, color: Colors.grey);
+    return Padding(
+      padding: const EdgeInsets.only(left: 5, top: 8),
+      child: Icon(Icons.check, size: 18, color: Colors.grey),
+    );
+  } else if (status == 1) {
+    return Padding(
+      padding: const EdgeInsets.only(left: 5, top: 8),
+      child: Icon(Icons.done_all, size: 18, color: Colors.grey),
+    );
+  } else {
+    return Padding(
+      padding: const EdgeInsets.only(left: 5, top: 8),
+      child: Icon(Icons.done_all, size: 18, color: Colors.blue),
+    );
   }
-  if (status == 1) {
-    return Icon(Icons.done_all, size: 16, color: Colors.grey);
-  }
-  return Icon(Icons.done_all, size: 16, color: Colors.blue);
 }

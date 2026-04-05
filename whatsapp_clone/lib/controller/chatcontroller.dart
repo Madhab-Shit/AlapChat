@@ -47,13 +47,13 @@ class Chatcontroller extends GetxController {
       'lastMessage': sms,
       'sender': send,
       'receiver': chatId,
-      'time': FieldValue.serverTimestamp(),
+      'time': DateTime.now(),
     }, SetOptions(merge: true));
 
     await _firestore.collection('chatdata').doc(chatId).collection(chatId).add({
       'type': 'text',
       'message': sms,
-      'time': FieldValue.serverTimestamp(),
+      'time': DateTime.now(),
       'sender': send,
       'receiver': recivers,
       'status': 0,
@@ -68,7 +68,7 @@ class Chatcontroller extends GetxController {
         'lastMessage': "sms",
         'sender': send,
         'receiver': chatId,
-        'time': FieldValue.serverTimestamp(),
+        'time': DateTime.now(),
       }, SetOptions(merge: true));
       await _firestore
           .collection('chatdata')
@@ -77,7 +77,7 @@ class Chatcontroller extends GetxController {
           .add({
             'type': 'image',
             'message': imageurl,
-            'time': FieldValue.serverTimestamp(),
+            'time': DateTime.now(),
             'sender': send,
             'receiver': recivers,
           });
@@ -220,7 +220,7 @@ class Chatcontroller extends GetxController {
         'lastMessage': "document",
         'sender': send,
         'receiver': chatId,
-        'time': FieldValue.serverTimestamp(),
+        'time': DateTime.now(),
       }, SetOptions(merge: true));
       await _firestore
           .collection('chatdata')
@@ -229,7 +229,7 @@ class Chatcontroller extends GetxController {
           .add({
             'type': 'document',
             'message': documenturl,
-            'time': FieldValue.serverTimestamp(),
+            'time': DateTime.now(),
             'sender': send,
             'receiver': recivers,
           });
@@ -301,5 +301,32 @@ class Chatcontroller extends GetxController {
       log("UPLOAD ERROR = $e");
       return;
     }
+  }
+
+  //seen message
+  Future<void> seenmessage(String msg, String sendid, String reciveid) async {
+    FirebaseFirestore.instance
+        .collection('chatdata')
+        .doc(getChatId(sendid, reciveid))
+        .collection(getChatId(sendid, reciveid))
+        .doc(msg)
+        .update({"status": 2});
+  }
+
+  RxString formattedTime = "".obs;
+  //datetime find
+  void timefind(var time) {
+    if (time != null) {
+      DateTime dateTime = time.toDate();
+
+      formattedTime.value = formatTime12(dateTime);
+    }
+  }
+
+  String formatTime12(DateTime dt) {
+    int hour = dt.hour > 12 ? dt.hour - 12 : dt.hour;
+    String ampm = dt.hour >= 12 ? "PM" : "AM";
+
+    return "$hour:${dt.minute.toString().padLeft(2, '0')} $ampm";
   }
 }
