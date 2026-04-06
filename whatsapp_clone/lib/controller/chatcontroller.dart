@@ -9,6 +9,7 @@ import 'package:get/get.dart';
 import 'dart:io';
 import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 import 'package:traychat/controller/voicechat.dart';
 import 'package:traychat/galleryacess.dart';
 import 'package:url_launcher/url_launcher.dart';
@@ -317,10 +318,18 @@ class Chatcontroller extends GetxController {
   //datetime find
   void timefind(var time) {
     if (time != null) {
-      DateTime dateTime = time.toDate();
-
-      formattedTime.value = formatTime12(dateTime);
+      Timestamp timestamp = time;
+      DateTime dateTime = timestamp.toDate();
+      formattedTime.value = DateFormat('dd MMM yyyy, hh:mm a').format(dateTime);
     }
+  }
+
+  RxString date = "".obs;
+  //today find
+  void todayfind() {
+    DateTime now = DateTime.now();
+
+    date.value = DateFormat('dd MMM yyyy, hh:mm a').format(now);
   }
 
   String formatTime12(DateTime dt) {

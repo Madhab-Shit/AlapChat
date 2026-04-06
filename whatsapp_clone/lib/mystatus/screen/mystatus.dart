@@ -4,6 +4,8 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
+import 'package:traychat/chat.dart';
 import 'package:traychat/controller/chatcontroller.dart';
 import 'package:traychat/controller/singincontroler.dart';
 import 'package:traychat/controller/statuscontroller.dart';
@@ -20,6 +22,7 @@ class Mystatus extends StatefulWidget {
 
 class _MystatusState extends State<Mystatus> {
   final Statuscontroller status = Get.find<Statuscontroller>();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -58,6 +61,16 @@ class _MystatusState extends State<Mystatus> {
               } else {
                 cleanUrl = image;
               }
+              chat.timefind(item[index]['createdAt']);
+              chat.todayfind();
+              String day = '';
+              if (chat.formattedTime.value.split(',').first ==
+                  chat.date.value.split(',').first) {
+                day = 'today';
+              } else {
+                day = 'Yesterday';
+              }
+
               return Padding(
                 padding: const EdgeInsets.symmetric(
                   horizontal: 10.0,
@@ -77,21 +90,52 @@ class _MystatusState extends State<Mystatus> {
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      CircleAvatar(
-                        radius: 25,
-                        backgroundColor: Colors.white,
-                        backgroundImage: NetworkImage(
-                          "${cleanUrl.toString()}.jpg",
-                        ),
+                      Row(
+                        spacing: 15,
+                        children: [
+                          CircleAvatar(
+                            radius: 25,
+                            backgroundColor: Colors.white,
+                            backgroundImage: NetworkImage(
+                              "${cleanUrl.toString()}.jpg",
+                            ),
+                          ),
+
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                "views 0",
+                                style: TextStyle(
+                                  fontSize: 18,
+                                  fontWeight: FontWeight.w400,
+                                ),
+                              ),
+                              Text(
+                                "${day} ${chat.formattedTime.value.split(',').last}",
+                                style: TextStyle(fontSize: 13),
+                              ),
+                            ],
+                          ),
+                        ],
                       ),
-                      PopupMenuButton(
-                        onSelected: (value) async {
-                          if (value == "Delete") {
-                            status.deletestatus(widget.username, index);
-                          }
-                        },
-                        itemBuilder: (context) => [
-                          PopupMenuItem(child: Text("delete"), value: "Delete"),
+
+                      Row(
+                        children: [
+                          PopupMenuButton(
+                            onSelected: (value) async {
+                              if (value == "Delete") {
+                                status.deletestatus(widget.username, index);
+                              }
+                            },
+                            itemBuilder: (context) => [
+                              PopupMenuItem(
+                                child: Text("delete"),
+                                value: "Delete",
+                              ),
+                            ],
+                          ),
                         ],
                       ),
                     ],

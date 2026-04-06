@@ -3,6 +3,7 @@ import 'dart:developer';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:traychat/chat.dart';
 import 'package:traychat/controller/chatcontroller.dart';
 import 'package:traychat/controller/singincontroler.dart';
@@ -32,12 +33,24 @@ class _MystoryplayState extends State<Mystoryplay> {
   final Statuscontroller status = Get.find<Statuscontroller>();
   int i = 0;
   late VideoPlayerController _controller;
+  String day = '';
 
   @override
   void initState() {
     super.initState();
     loadVideo();
     chat.timefind(widget.time);
+    datefind();
+  }
+
+  void datefind() {
+    chat.todayfind();
+    if (chat.formattedTime.value.split(',').first ==
+        chat.date.value.split(',').first) {
+      day = 'today';
+    } else {
+      day = 'Yesterday';
+    }
   }
 
   void loadVideo() {
@@ -76,6 +89,7 @@ class _MystoryplayState extends State<Mystoryplay> {
               child: Text(controller.username.value.toString().split('').first),
             ),
             Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 Padding(
                   padding: const EdgeInsets.only(top: 5.0),
@@ -85,7 +99,7 @@ class _MystoryplayState extends State<Mystoryplay> {
                   ),
                 ),
                 Text(
-                  date.formattedTime.value,
+                  "${day} ${date.formattedTime.value.split(',').last}",
                   style: TextStyle(color: Colors.white, fontSize: 14),
                 ),
               ],
@@ -101,6 +115,8 @@ class _MystoryplayState extends State<Mystoryplay> {
                   status.deletestatus(widget.username, widget.index);
 
                   Get.back();
+                } else if (value == 'Share') {
+                  SharePlus.instance.share(ShareParams(text: "${widget.item}"));
                 }
               },
               itemBuilder: (context) => [
