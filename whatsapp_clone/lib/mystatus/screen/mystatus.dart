@@ -1,8 +1,11 @@
 import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:traychat/controller/chatcontroller.dart';
+import 'package:traychat/controller/singincontroler.dart';
 import 'package:traychat/controller/statuscontroller.dart';
 import 'package:traychat/mystatus/screen/mystoryplay.dart';
 import 'package:traychat/story/story.dart';
@@ -31,9 +34,18 @@ class _MystatusState extends State<Mystatus> {
           if (snapshot.connectionState == ConnectionState.waiting) {
             return Center(child: CircularProgressIndicator());
           }
-          final data = snapshot.data!.data();
-          final item = data!['item'];
-          log(item.toString());
+          if (!snapshot.hasData || snapshot.data!.data() == null) {
+            return Center(child: Text("No Data"));
+          }
+
+          final data = snapshot.data!.data() as Map<String, dynamic>;
+
+          List item = data['item'] ?? [];
+          if (item.isEmpty) {
+            WidgetsBinding.instance.addPostFrameCallback((_) {
+              Get.back();
+            });
+          }
 
           return ListView.builder(
             itemCount: item.length,
@@ -53,7 +65,15 @@ class _MystatusState extends State<Mystatus> {
                 ),
                 child: InkWell(
                   onTap: () {
-                    Get.to(() => Mystoryplay(item: image));
+                    Get.to(
+                      () => Mystoryplay(
+                        item: image,
+                        time: item[index]['createdAt'],
+                        index: index,
+                        username: widget.username,
+
+                      ),
+                    );
                   },
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -66,9 +86,19 @@ class _MystatusState extends State<Mystatus> {
                         ),
                       ),
                       PopupMenuButton(
-                        onSelected: (value) {
+                        onSelected: (value) async {
                           if (value == "Delete") {
-                            log("message");
+                            var ref = FirebaseFirestore.instance
+                                .collection('status')
+                                .doc(widget.username);
+
+                            var snapshot = await ref.get();
+
+                            List items = snapshot['item'];
+
+                            items.removeAt(index);
+
+                            await ref.update({'item': items});
                           }
                         },
                         itemBuilder: (context) => [

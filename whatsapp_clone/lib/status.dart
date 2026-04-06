@@ -1,15 +1,9 @@
-import 'dart:developer';
-import 'dart:io';
-
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:traychat/controller/singincontroler.dart';
 import 'package:traychat/mystatus/screen/mystatus.dart';
 import 'package:traychat/story/story.dart';
-import 'package:traychat/test.dart';
 
 import 'controller/statuscontroller.dart';
 
@@ -45,7 +39,7 @@ class _StatusState extends State<Status> {
                     .doc(username.username.value)
                     .get();
                 if (firestore.exists) {
-                  Get.to(() => Mystatus(username: username.username.value,));
+                  Get.to(() => Mystatus(username: username.username.value));
                   return;
                 }
                 await status.statusvideochose();
@@ -106,7 +100,6 @@ class _StatusState extends State<Status> {
                     var data = data1[index].data();
 
                     List items = data['item'];
-                    log(items.length.toString());
                     for (var i = 0; i < items.length; i++) {
                       if (!items[i]['expiresAt'].toDate().isAfter(
                         DateTime.now(),

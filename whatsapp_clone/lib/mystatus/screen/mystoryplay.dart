@@ -1,13 +1,25 @@
 import 'dart:developer';
 
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:traychat/chat.dart';
+import 'package:traychat/controller/chatcontroller.dart';
 import 'package:traychat/controller/singincontroler.dart';
 import 'package:video_player/video_player.dart';
 
 class Mystoryplay extends StatefulWidget {
   final String item;
-  const Mystoryplay({super.key, required this.item});
+  final time;
+  final int index;
+  final String username;
+  const Mystoryplay({
+    super.key,
+    required this.item,
+    required this.time,
+    required this.index,
+    required this.username,
+  });
 
   @override
   _MystoryplayState createState() => _MystoryplayState();
@@ -15,6 +27,7 @@ class Mystoryplay extends StatefulWidget {
 
 class _MystoryplayState extends State<Mystoryplay> {
   final Getx controller = Get.find<Getx>();
+  final Chatcontroller date = Get.find<Chatcontroller>();
   int i = 0;
   late VideoPlayerController _controller;
 
@@ -22,6 +35,7 @@ class _MystoryplayState extends State<Mystoryplay> {
   void initState() {
     super.initState();
     loadVideo();
+    chat.timefind(widget.time);
   }
 
   void loadVideo() {
@@ -69,7 +83,7 @@ class _MystoryplayState extends State<Mystoryplay> {
                   ),
                 ),
                 Text(
-                  "date",
+                  date.formattedTime.value,
                   style: TextStyle(color: Colors.white, fontSize: 14),
                 ),
               ],
@@ -80,7 +94,22 @@ class _MystoryplayState extends State<Mystoryplay> {
           Padding(
             padding: const EdgeInsets.only(right: 10.0),
             child: PopupMenuButton(
-              onSelected: (value) {},
+              onSelected: (value) async {
+                if (value == 'Delete') {
+                  var ref = FirebaseFirestore.instance
+                      .collection('status')
+                      .doc(widget.username);
+
+                  var snapshot = await ref.get();
+
+                  List items = snapshot['item'];
+
+                  items.removeAt(widget.index);
+
+                  await ref.update({'item': items});
+                  Get.back();
+                }
+              },
               itemBuilder: (context) => [
                 PopupMenuItem(child: Text("Share"), value: "Share"),
                 PopupMenuItem(child: Text("Delete"), value: "Delete"),
