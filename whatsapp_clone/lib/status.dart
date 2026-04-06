@@ -45,8 +45,7 @@ class _StatusState extends State<Status> {
                     .doc(username.username.value)
                     .get();
                 if (firestore.exists) {
-                  final data = firestore.data();
-                  Get.to(() => Mystatus(item: data!['item']));
+                  Get.to(() => Mystatus(username: username.username.value,));
                   return;
                 }
                 await status.statusvideochose();
@@ -106,15 +105,24 @@ class _StatusState extends State<Status> {
                   itemBuilder: (context, index) {
                     var data = data1[index].data();
 
-                    List items = data['item'] ?? [];
+                    List items = data['item'];
+                    log(items.length.toString());
+                    for (var i = 0; i < items.length; i++) {
+                      if (!items[i]['expiresAt'].toDate().isAfter(
+                        DateTime.now(),
+                      )) {
+                        items.removeAt(i);
+                        var ref = FirebaseFirestore.instance
+                            .collection('status')
+                            .doc(data['username']);
+                        ref.update({'item': items});
+                      }
+                    }
 
-                    List validItems = items.where((item) {
-                      return item['expiresAt'].toDate().isAfter(DateTime.now());
-                    }).toList();
-                    if (validItems.isEmpty) {
+                    if (items.isEmpty) {
                       FirebaseFirestore.instance
                           .collection('status')
-                          .doc(data1[index].id)
+                          .doc(data['username'])
                           .delete();
                       return SizedBox();
                     }
