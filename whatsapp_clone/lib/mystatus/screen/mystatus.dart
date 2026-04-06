@@ -71,7 +71,6 @@ class _MystatusState extends State<Mystatus> {
                         time: item[index]['createdAt'],
                         index: index,
                         username: widget.username,
-
                       ),
                     );
                   },
@@ -88,17 +87,7 @@ class _MystatusState extends State<Mystatus> {
                       PopupMenuButton(
                         onSelected: (value) async {
                           if (value == "Delete") {
-                            var ref = FirebaseFirestore.instance
-                                .collection('status')
-                                .doc(widget.username);
-
-                            var snapshot = await ref.get();
-
-                            List items = snapshot['item'];
-
-                            items.removeAt(index);
-
-                            await ref.update({'item': items});
+                            status.deletestatus(widget.username, index);
                           }
                         },
                         itemBuilder: (context) => [

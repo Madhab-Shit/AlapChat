@@ -6,6 +6,7 @@ import 'package:get/get.dart';
 import 'package:traychat/chat.dart';
 import 'package:traychat/controller/chatcontroller.dart';
 import 'package:traychat/controller/singincontroler.dart';
+import 'package:traychat/controller/statuscontroller.dart';
 import 'package:video_player/video_player.dart';
 
 class Mystoryplay extends StatefulWidget {
@@ -28,6 +29,7 @@ class Mystoryplay extends StatefulWidget {
 class _MystoryplayState extends State<Mystoryplay> {
   final Getx controller = Get.find<Getx>();
   final Chatcontroller date = Get.find<Chatcontroller>();
+  final Statuscontroller status = Get.find<Statuscontroller>();
   int i = 0;
   late VideoPlayerController _controller;
 
@@ -96,17 +98,8 @@ class _MystoryplayState extends State<Mystoryplay> {
             child: PopupMenuButton(
               onSelected: (value) async {
                 if (value == 'Delete') {
-                  var ref = FirebaseFirestore.instance
-                      .collection('status')
-                      .doc(widget.username);
+                  status.deletestatus(widget.username, widget.index);
 
-                  var snapshot = await ref.get();
-
-                  List items = snapshot['item'];
-
-                  items.removeAt(widget.index);
-
-                  await ref.update({'item': items});
                   Get.back();
                 }
               },

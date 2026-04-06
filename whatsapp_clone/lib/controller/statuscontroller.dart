@@ -27,4 +27,20 @@ class Statuscontroller extends GetxController {
       throw Exception(e);
     }
   }
+
+  Future<void> deletestatus(String username, int index) async {
+    try {
+      var ref = FirebaseFirestore.instance.collection('status').doc(username);
+
+      var snapshot = await ref.get();
+
+      List items = snapshot['item'];
+
+      items.removeAt(index);
+
+      await ref.update({'item': items});
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
 }
