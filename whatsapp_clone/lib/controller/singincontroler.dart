@@ -36,6 +36,8 @@ class Getx extends GetxController {
                 'expiresAt': Timestamp.fromDate(
                   DateTime.now().add(Duration(hours: 24)),
                 ),
+                'view': 0,
+                'user': FieldValue.arrayUnion([{}]),
               },
             ]),
           }, SetOptions(merge: true));
