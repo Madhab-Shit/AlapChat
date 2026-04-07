@@ -66,7 +66,7 @@ class _MystatusState extends State<Mystatus> {
               String day = '';
               if (chat.formattedTime.value.split(',').first ==
                   chat.date.value.split(',').first) {
-                day = 'today';
+                day = 'Today';
               } else {
                 day = 'Yesterday';
               }
@@ -84,6 +84,8 @@ class _MystatusState extends State<Mystatus> {
                         time: item[index]['createdAt'],
                         index: index,
                         username: widget.username,
+                        data: item[index]['user'],
+                        view: item[index]['view'],
                       ),
                     );
                   },
@@ -106,7 +108,7 @@ class _MystatusState extends State<Mystatus> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                "views 0",
+                                "views ${item[index]['view'].toString()}",
                                 style: TextStyle(
                                   fontSize: 18,
                                   fontWeight: FontWeight.w400,

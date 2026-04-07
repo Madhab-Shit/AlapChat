@@ -4,6 +4,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:traychat/controller/singincontroler.dart';
 import 'package:traychat/story/controller/controller.dart';
 import 'package:video_player/video_player.dart';
 
@@ -18,6 +19,7 @@ class VideoApp extends StatefulWidget {
 
 class _VideoAppState extends State<VideoApp> {
   final sorycontroler story = Get.put(sorycontroler());
+  final Getx chatcon = Get.find<Getx>();
   int i = 0;
   late VideoPlayerController _controller;
 
@@ -52,11 +54,11 @@ class _VideoAppState extends State<VideoApp> {
     i++;
 
     if (i >= widget.item.length) {
-      story.viewcount(widget.name);
+      story.viewcount(widget.name, chatcon.username.value, i - 1);
       Get.back();
       return;
     }
-    story.viewcount(widget.name);
+    story.viewcount(widget.name, chatcon.username.value, i - 1);
 
     loadVideo();
   }

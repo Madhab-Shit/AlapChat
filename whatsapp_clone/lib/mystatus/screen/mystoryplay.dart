@@ -15,12 +15,16 @@ class Mystoryplay extends StatefulWidget {
   final time;
   final int index;
   final String username;
+  final List data;
+  final int view;
   const Mystoryplay({
     super.key,
     required this.item,
     required this.time,
     required this.index,
     required this.username,
+    required this.data,
+    required this.view,
   });
 
   @override
@@ -143,6 +147,73 @@ class _MystoryplayState extends State<Mystoryplay> {
               : Container(),
         ),
       ),
+      floatingActionButton: Container(
+        width: 80,
+        height: 45,
+        decoration: BoxDecoration(
+          color: const Color.fromARGB(255, 60, 59, 59),
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: FloatingActionButton(
+          backgroundColor: Colors.transparent,
+          onPressed: () {
+            showModalBottomSheet(
+              context: context,
+              builder: (context) {
+                _controller.pause();
+                return ListView.builder(
+                  itemCount: widget.data.length,
+                  shrinkWrap: true,
+                  itemBuilder: (context, index) {
+                    date.timefind(widget.data[index]['seenAt']);
+                    String day = '';
+                    if (chat.formattedTime.value.split(',').first ==
+                        chat.date.value.split(',').first) {
+                      day = 'Today';
+                    } else {
+                      day = 'Yesterday';
+                    }
+                    return ListTile(
+                      leading: CircleAvatar(
+                        radius: 25,
+                        child: Text(
+                          widget.data[index]['name'].toString().split("").first,
+                          style: TextStyle(fontSize: 20),
+                        ),
+                      ),
+                      title: Text(
+                        widget.data[index]['name'],
+                        style: TextStyle(fontSize: 18),
+                      ),
+                      trailing: Text(
+                        "${day},${date.formattedTime.value.split(',').last}",
+                        style: TextStyle(fontSize: 14),
+                      ),
+                    );
+                  },
+                );
+              },
+            ).then((_) {
+              _controller.play(); 
+            });
+          },
+          child: Center(
+            child: Row(
+              spacing: 10,
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Icon(Icons.visibility, color: Colors.white),
+                Text(
+                  widget.view.toString(),
+                  style: TextStyle(color: Colors.white),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ),
+      floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
     );
   }
 

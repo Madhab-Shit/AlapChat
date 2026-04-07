@@ -29,6 +29,7 @@ class Getx extends GetxController {
           .doc(username.value)
           .set({
             'username': username.value,
+
             'item': FieldValue.arrayUnion([
               {
                 'video': pathstatus,
@@ -37,7 +38,7 @@ class Getx extends GetxController {
                   DateTime.now().add(Duration(hours: 24)),
                 ),
                 'view': 0,
-                'user': FieldValue.arrayUnion([{}]),
+                'user': [],
               },
             ]),
           }, SetOptions(merge: true));
